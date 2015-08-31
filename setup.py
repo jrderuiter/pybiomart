@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-install_requires = ['pandas', 'requests', 'requests_cache']
+install_requires = ['future', 'pandas', 'requests', 'requests_cache']
 
 setup(
     name='pybiomart',

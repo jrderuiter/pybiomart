@@ -1,5 +1,4 @@
-biomart_jr.egg-info
 .idea
-biomart_jr/__pycache__
 __pycache__
 pybiomart.egg-info
+*.pyc
