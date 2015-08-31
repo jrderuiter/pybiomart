@@ -10,6 +10,7 @@ Retrieving and querying a dataset using the server interace:
 from pybiomart import Server
 
 server = Server(host='http://www.ensembl.org')
+
 dataset = (server.marts['ENSEMBL_MART_ENSEMBL']
                  .datasets['hsapiens_gene_ensembl'])
                  
