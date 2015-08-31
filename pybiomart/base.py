@@ -5,11 +5,14 @@ from builtins import (ascii, bytes, chr, dict, filter, hex, input,
                       str, super, zip)
 
 import requests
+import requests_cache
 
 DEFAULT_HOST = 'http://www.biomart.org'
 DEFAULT_PATH = '/biomart/martservice'
 DEFAULT_PORT = 80
 DEFAULT_SCHEMA = 'default'
+
+requests_cache.install_cache('_biomart_cache')
 
 
 class ServerBase(object):
@@ -45,13 +48,14 @@ class ServerBase(object):
             url = prefix + url
         return url
 
-    def get(self, **params):
-        r = requests.get(self.url, params=params)
+    def get(self, use_cache=True, **params):
+        if use_cache:
+            r = requests.get(self.url, params=params)
+        else:
+            with requests_cache.disabled():
+                r = requests.get(self.url, params=params)
         r.raise_for_status()
         return r
-
-    def post(self, params):
-        pass
 
 
 class BiomartException(Exception):

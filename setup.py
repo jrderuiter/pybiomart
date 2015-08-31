@@ -1,9 +1,9 @@
 from setuptools import setup, find_packages
 
-install_requires = ['pandas', 'requests']
+install_requires = ['pandas', 'requests', 'requests_cache']
 
 setup(
-    name='biomart_jr',
+    name='pybiomart',
     version='0.0.1',
     url='',
     author='Julian de Ruiter',
