@@ -18,9 +18,10 @@ class Mart(ServerBase):
                        'unknown3', 'unknown4', 'virtual_schema', 'unknown5']
 
     def __init__(self, name, database_name, display_name,
-                 host=None, path=None, port=None,
+                 host=None, path=None, port=None, use_cache=True,
                  virtual_schema=DEFAULT_SCHEMA, extra_params=None):
-        super().__init__(host=host, path=path, port=port)
+        super().__init__(host=host, path=path,
+                         port=port, use_cache=use_cache)
 
         self._name = name
         self._database_name = database_name
@@ -68,7 +69,8 @@ class Mart(ServerBase):
 
     def _dataset_from_row(self, row):
         return Dataset(name=row['name'], display_name=row['display_name'],
-                       host=self.host, path=self.path, port=self.port,
+                       host=self.host, path=self.path,
+                       port=self.port, use_cache=self.use_cache,
                        virtual_schema=row['virtual_schema'])
 
     def __repr__(self):

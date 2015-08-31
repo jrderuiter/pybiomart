@@ -14,8 +14,10 @@ from .base import ServerBase, DEFAULT_SCHEMA
 class Dataset(ServerBase):
 
     def __init__(self, name, display_name='', host=None,
-                 path=None, port=None, virtual_schema=DEFAULT_SCHEMA):
-        super().__init__(host=host, path=path, port=port)
+                 path=None, port=None, use_cache=True,
+                 virtual_schema=DEFAULT_SCHEMA):
+        super().__init__(host=host, path=path,
+                         port=port, use_cache=use_cache)
 
         self._name = name
         self._display_name = display_name

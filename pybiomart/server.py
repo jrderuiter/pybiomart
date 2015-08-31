@@ -21,8 +21,9 @@ class Server(ServerBase):
         'virtual_schema': 'serverVirtualSchema'
     }
 
-    def __init__(self, host=None, path=None, port=None):
-        super().__init__(host=host, path=path, port=port)
+    def __init__(self, host=None, path=None, port=None, use_cache=True):
+        super().__init__(host=host, path=path,
+                         port=port, use_cache=use_cache)
         self._marts = None
 
     def __getitem__(self, name):
@@ -48,7 +49,7 @@ class Server(ServerBase):
                   for k, v in self.MART_XML_MAP.items()}
         params['extra_params'] = {k: v for k, v in node.attrib.items()
                                   if k not in set(self.MART_XML_MAP.values())}
-        return Mart(**params)
+        return Mart(use_cache=self.use_cache, **params)
 
     def __repr__(self):
         return ('<biomart.Server host={!r}, path={!r}, port={!r}>'
