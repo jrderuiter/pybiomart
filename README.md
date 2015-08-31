@@ -31,7 +31,7 @@ dataset.query(attributes=['ensembl_gene_id', 'external_gene_name'],
 ```
 
 ## Dependencies
-- Python 3.3+, currently untested on Python 2.7 (legacy Python)
+- Python 3.3+, Python 2.7 (legacy Python)
 - requests, requests-cache
 - pandas
 
