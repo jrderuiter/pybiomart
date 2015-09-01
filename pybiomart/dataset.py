@@ -8,7 +8,7 @@ import pandas as pd
 from io import StringIO
 from xml.etree import ElementTree
 
-from .base import ServerBase, DEFAULT_SCHEMA
+from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
 
 
 class Dataset(ServerBase):
@@ -179,14 +179,24 @@ class Dataset(ServerBase):
         if attributes is not None:
             # Add attribute elements.
             for name in attributes:
-                attr = self.attributes[name]
-                self._add_attr_node(dataset, attr)
+                try:
+                    attr = self.attributes[name]
+                    self._add_attr_node(dataset, attr)
+                except KeyError:
+                    raise BiomartException(
+                        'Unknown attribute {}, check dataset attributes '
+                        'for a list of valid attributes.'.format(name))
 
         if filters is not None:
             # Add filter elements.
             for name, value in filters.items():
-                filter_ = self.filters[name]
-                self._add_filter_node(dataset, filter_, value)
+                try:
+                    filter_ = self.filters[name]
+                    self._add_filter_node(dataset, filter_, value)
+                except KeyError:
+                    raise BiomartException(
+                        'Unknown filter {}, check dataset filters '
+                        'for a list of valid filters'.format(name))
 
         # Fetch and parse response into a DataFrame.
         response = self.get(query=ElementTree.tostring(root))
