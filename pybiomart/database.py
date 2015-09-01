@@ -12,7 +12,18 @@ from .base import ServerBase, DEFAULT_SCHEMA
 from .dataset import Dataset
 
 
-class Mart(ServerBase):
+class Database(ServerBase):
+    """Biomart database.
+
+    Represents a specific database on the biomart server.
+
+    Attributes:
+        name (str): Name of the database.
+        display_name (str): Display name of the database.
+        database_name (str): ID of the database on the host.
+        datasets (list of Datasets): List of datasets in this database.
+
+    """
 
     RESULT_COLNAMES = ['type', 'name', 'display_name', 'unknown', 'unknown2',
                        'unknown3', 'unknown4', 'virtual_schema', 'unknown5']
@@ -20,6 +31,29 @@ class Mart(ServerBase):
     def __init__(self, name, database_name, display_name,
                  host=None, path=None, port=None, use_cache=True,
                  virtual_schema=DEFAULT_SCHEMA, extra_params=None):
+        """Database constructor.
+
+        Args:
+            name (str): Name of the database.
+            database_name (str): ID of the database on the host.
+            display_name (str): Display name of the database.
+            host (str): Url of host to connect to.
+            path (str): Path on the host to access to the biomart service.
+            port (int): Port to use for the connection.
+            use_cache (bool): Whether to cache requests.
+            virtual_schema (str): The virtual schema of the dataset.
+
+        Examples:
+            Getting the database:
+                >>> from pybiomart import Server
+                >>> server = Server(host='http://www.ensembl.org')
+                >>> database = server.databases['ENSEMBL_MART_ENSEMBL']
+
+            Getting a database from the database:
+                >>> database.datasets['hsapiens_gene_ensembl']
+
+        """
+
         super().__init__(host=host, path=path,
                          port=port, use_cache=use_cache)
 
@@ -37,18 +71,22 @@ class Mart(ServerBase):
 
     @property
     def name(self):
+        """Name of the database."""
         return self._name
 
     @property
     def display_name(self):
+        """Display name of the database."""
         return self._display_name
 
     @property
     def database_name(self):
+        """ID of the mart on the host."""
         return self._database_name
 
     @property
     def datasets(self):
+        """List of datasets in this database."""
         if self._datasets is None:
             self._datasets = self._fetch_datasets()
         return self._datasets
