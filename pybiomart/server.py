@@ -7,7 +7,7 @@ from builtins import (ascii, bytes, chr, dict, filter, hex, input,
 from xml.etree.ElementTree import fromstring as xml_from_string
 
 from .base import ServerBase
-from .database import Database
+from .mart import Mart
 
 
 class Server(ServerBase):
@@ -19,14 +19,14 @@ class Server(ServerBase):
     the databases that are available on the server.
 
     Attributes:
-        databases (list of Database): Databases available on the server.
+        marts (list of Marts): Marts available on the server.
 
     Examples:
         Connecting to a server:
         >>> server = Server(host='http://www.ensembl.org')
 
         Retrieving a database:
-        >>> database = server.databases['ENSEMBL_MART_ENSEMBL']
+        >>> database = server.marts['ENSEMBL_MART_ENSEMBL']
 
     """
 
@@ -52,17 +52,17 @@ class Server(ServerBase):
 
         super().__init__(host=host, path=path,
                          port=port, use_cache=use_cache)
-        self._databases = None
+        self._marts = None
 
     def __getitem__(self, name):
-        return self._databases[name]
+        return self._marts[name]
 
     @property
-    def databases(self):
+    def marts(self):
         """List of available databases."""
-        if self._databases is None:
-            self._databases = self._fetch_marts()
-        return self._databases
+        if self._marts is None:
+            self._marts = self._fetch_marts()
+        return self._marts
 
     def _fetch_marts(self):
         response = self.get(type='registry')
@@ -78,7 +78,7 @@ class Server(ServerBase):
                   for k, v in self._MART_XML_MAP.items()}
         params['extra_params'] = {k: v for k, v in node.attrib.items()
                                   if k not in set(self._MART_XML_MAP.values())}
-        return Database(use_cache=self.use_cache, **params)
+        return Mart(use_cache=self.use_cache, **params)
 
     def __repr__(self):
         return ('<biomart.Server host={!r}, path={!r}, port={!r}>'

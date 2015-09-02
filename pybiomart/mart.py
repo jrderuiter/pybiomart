@@ -12,17 +12,17 @@ from .base import ServerBase, DEFAULT_SCHEMA
 from .dataset import Dataset
 
 
-class Database(ServerBase):
+class Mart(ServerBase):
 
-    """Biomart database.
+    """Biomart mart.
 
-    Represents a specific database on the biomart server.
+    Represents a specific mart on the biomart server.
 
     Attributes:
-        name (str): Name of the database.
-        display_name (str): Display name of the database.
-        database_name (str): ID of the database on the host.
-        datasets (list of Datasets): List of datasets in this database.
+        name (str): Name of the mart.
+        display_name (str): Display name of the mart.
+        database_name (str): ID of the mart on the host.
+        datasets (list of Datasets): List of datasets in this mart.
 
     """
 
@@ -32,12 +32,12 @@ class Database(ServerBase):
     def __init__(self, name, database_name, display_name,
                  host=None, path=None, port=None, use_cache=True,
                  virtual_schema=DEFAULT_SCHEMA, extra_params=None):
-        """Database constructor.
+        """mart constructor.
 
         Args:
-            name (str): Name of the database.
-            database_name (str): ID of the database on the host.
-            display_name (str): Display name of the database.
+            name (str): Name of the mart.
+            database_name (str): ID of the mart on the host.
+            display_name (str): Display name of the mart.
             host (str): Url of host to connect to.
             path (str): Path on the host to access to the biomart service.
             port (int): Port to use for the connection.
@@ -45,13 +45,13 @@ class Database(ServerBase):
             virtual_schema (str): The virtual schema of the dataset.
 
         Examples:
-            Getting the database:
+            Getting the mart:
                 >>> from pybiomart import Server
                 >>> server = Server(host='http://www.ensembl.org')
-                >>> database = server.databases['ENSEMBL_MART_ENSEMBL']
+                >>> mart = server.marts['ENSEMBL_MART_ENSEMBL']
 
-            Getting a database from the database:
-                >>> database.datasets['hsapiens_gene_ensembl']
+            Getting a mart from the mart:
+                >>> mart.datasets['hsapiens_gene_ensembl']
 
         """
 
@@ -72,12 +72,12 @@ class Database(ServerBase):
 
     @property
     def name(self):
-        """Name of the database."""
+        """Name of the mart."""
         return self._name
 
     @property
     def display_name(self):
-        """Display name of the database."""
+        """Display name of the mart."""
         return self._display_name
 
     @property
@@ -87,7 +87,7 @@ class Database(ServerBase):
 
     @property
     def datasets(self):
-        """List of datasets in this database."""
+        """List of datasets in this mart."""
         if self._datasets is None:
             self._datasets = self._fetch_datasets()
         return self._datasets
