@@ -12,7 +12,8 @@ from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
 
 
 class Dataset(ServerBase):
-    """ Biomart dataset.
+
+    """Biomart dataset.
 
     Main Dataset class that handles queries to biomart datasets. Queries
     can select a subset of attributes (valid attributes are listed in
@@ -238,6 +239,7 @@ class Dataset(ServerBase):
 
 
 class Attribute(object):
+
     """Biomart dataset attribute.
 
     Attributes:
@@ -282,6 +284,7 @@ class Attribute(object):
 
 
 class Filter(object):
+
     """Biomart dataset filter.
 
     Attributes:

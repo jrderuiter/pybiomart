@@ -13,6 +13,7 @@ from .dataset import Dataset
 
 
 class Database(ServerBase):
+
     """Biomart database.
 
     Represents a specific database on the biomart server.

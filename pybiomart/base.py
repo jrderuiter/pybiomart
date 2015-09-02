@@ -16,6 +16,7 @@ requests_cache.install_cache('_pybiomart_cache')
 
 
 class ServerBase(object):
+    
     """Base class that handles requests to the biomart server.
 
     Attributes:

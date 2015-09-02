@@ -11,6 +11,7 @@ from .database import Database
 
 
 class Server(ServerBase):
+
     """Biomart server class.
 
     Represents a biomart server. Typically used as main entry point to the
