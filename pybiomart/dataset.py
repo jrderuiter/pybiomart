@@ -25,7 +25,9 @@ class Dataset(ServerBase):
         display_name (str): Display name of the dataset.
         virtual_schema (str): Name of the datasets virtual schema.
         filters (list of biomart.Filter): List of dataset filters.
-        attributes (list of biomart.Attribute): List of dataset attributes.
+        attributes (dict of str: biomart.Attribute): List of attributes.
+        default_attributes (dict of str: biomartAttributes): List of
+            attributes that are marked as default for this dataset.
 
     Examples:
         Directly connecting to a dataset:
@@ -70,6 +72,7 @@ class Dataset(ServerBase):
 
         self._filters = None
         self._attributes = None
+        self._default_attributes = None
 
     @property
     def name(self):
@@ -94,6 +97,14 @@ class Dataset(ServerBase):
         if self._attributes is None:
             self._filters, self._attributes = self._fetch_configuration()
         return self._attributes
+
+    @property
+    def default_attributes(self):
+        if self._default_attributes is None:
+            self._default_attributes = {
+                name: attr for name, attr in self.attributes.items()
+                if attr.default is True}
+        return self._default_attributes
 
     def list_attributes(self):
         def _row_gen(attributes):
@@ -125,14 +136,20 @@ class Dataset(ServerBase):
 
     @staticmethod
     def _attributes_from_xml(xml):
-        for page in xml.iter('AttributePage'):
+        for page_index, page in enumerate(xml.iter('AttributePage')):
             for desc in page.iter('AttributeDescription'):
                 attrib = desc.attrib
+
+                # Default attributes can only be from the first page.
+                default = (page_index == 0 and
+                           attrib.get('default', '') == 'true')
+
                 yield Attribute(name=attrib['internalName'],
                                 display_name=attrib.get('displayName', ''),
-                                description=attrib.get('description', ''))
+                                description=attrib.get('description', ''),
+                                default=default)
 
-    def query(self, attributes=None, filters=None):
+    def query(self, attributes=None, filters=None, only_unique=True):
         """Queries the dataset to retrieve the contained data.
 
         Args:
@@ -143,6 +160,8 @@ class Dataset(ServerBase):
                 to filter the dataset by. Filter names and values must
                 correspond to valid filters and filter values. See the
                 filters property for a list of valid filters.
+            only_unique (bool): Whether to return only rows containing
+                unique values (True) or to include duplicate rows (False).
 
         Returns:
             pandas.DataFrame: DataFrame containing the query results.
@@ -169,7 +188,7 @@ class Dataset(ServerBase):
         root.set('virtualSchemaName', self._virtual_schema)
         root.set('formatter', 'TSV')
         root.set('header', '1')
-        root.set('uniqueRows', '1')
+        root.set('uniqueRows', str(int(only_unique)))
         root.set('datasetConfigVersion', '0.6')
 
         # Add dataset element.
@@ -177,16 +196,19 @@ class Dataset(ServerBase):
         dataset.set('name', self.name)
         dataset.set('interface', 'default')
 
-        if attributes is not None:
-            # Add attribute elements.
-            for name in attributes:
-                try:
-                    attr = self.attributes[name]
-                    self._add_attr_node(dataset, attr)
-                except KeyError:
-                    raise BiomartException(
-                        'Unknown attribute {}, check dataset attributes '
-                        'for a list of valid attributes.'.format(name))
+        # Default to default attributes if none requested.
+        if attributes is None:
+            attributes = list(self.default_attributes.keys())
+
+        # Add attribute elements.
+        for name in attributes:
+            try:
+                attr = self.attributes[name]
+                self._add_attr_node(dataset, attr)
+            except KeyError:
+                raise BiomartException(
+                    'Unknown attribute {}, check dataset attributes '
+                    'for a list of valid attributes.'.format(name))
 
         if filters is not None:
             # Add filter elements.
@@ -249,18 +271,21 @@ class Attribute(object):
 
     """
 
-    def __init__(self, name, display_name='', description=''):
+    def __init__(self, name, display_name='', description='', default=False):
         """Attribute constructor.
 
         Args:
             name (str): Attribute name.
             display_name (str): Attribute display name.
             description (str): Attribute description.
+            default (bool): Whether the attribute is a default
+                attribute of the corresponding datasets.
 
         """
         self._name = name
         self._display_name = display_name
         self._description = description
+        self._default = default
 
     @property
     def name(self):
@@ -276,6 +301,11 @@ class Attribute(object):
     def description(self):
         """Description of the attribute."""
         return self._description
+
+    @property
+    def default(self):
+        """Whether this is a default attribute."""
+        return self._default
 
     def __repr__(self):
         return (('<biomart.Attribute name={!r},'
