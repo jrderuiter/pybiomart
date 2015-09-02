@@ -221,8 +221,14 @@ class Dataset(ServerBase):
                         'Unknown filter {}, check dataset filters '
                         'for a list of valid filters'.format(name))
 
-        # Fetch and parse response into a DataFrame.
+        # Fetch response.
         response = self.get(query=ElementTree.tostring(root))
+
+        # Raise exception if an error occurred.
+        if 'Query ERROR' in response.text:
+            raise BiomartException(response.text)
+
+        # Parse results into a DataFrame.
         result = pd.read_csv(StringIO(response.text), sep='\t')
 
         return result
