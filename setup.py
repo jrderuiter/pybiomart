@@ -4,7 +4,7 @@ install_requires = ['future', 'pandas', 'requests', 'requests_cache']
 
 setup(
     name='pybiomart',
-    version='0.0.1',
+    version='0.0.2',
     url='https://github.com/jrderuiter/pybiomart',
     author='Julian de Ruiter',
     author_email='julianderuiter@gmail.com',
