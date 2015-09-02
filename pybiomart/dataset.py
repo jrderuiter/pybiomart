@@ -100,6 +100,7 @@ class Dataset(ServerBase):
 
     @property
     def default_attributes(self):
+        """List of default attributes for the dataset."""
         if self._default_attributes is None:
             self._default_attributes = {
                 name: attr for name, attr in self.attributes.items()
