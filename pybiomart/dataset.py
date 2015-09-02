@@ -119,6 +119,12 @@ class Dataset(ServerBase):
         # Get datasets using biomart.
         response = self.get(type='configuration', dataset=self._name)
 
+        # Check response for problems.
+        if 'Problem retrieving configuration' in response.text:
+            raise BiomartException(
+                'Failed to retrieve dataset configuration, '
+                'check the dataset name and schema.')
+
         # Get filters and attributes from xml.
         xml = ElementTree.fromstring(response.text)
 
@@ -219,7 +225,7 @@ class Dataset(ServerBase):
                 except KeyError:
                     raise BiomartException(
                         'Unknown filter {}, check dataset filters '
-                        'for a list of valid filters'.format(name))
+                        'for a list of valid filters.'.format(name))
 
         # Fetch response.
         response = self.get(query=ElementTree.tostring(root))
