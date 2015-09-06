@@ -6,6 +6,7 @@ setup(
     name='pybiomart',
     version='0.0.3',
     url='https://github.com/jrderuiter/pybiomart',
+    download_url='https://github.com/jrderuiter/pybiomart/tarball/0.0.3',
     author='Julian de Ruiter',
     author_email='julianderuiter@gmail.com',
     description='A simple pythonic interface to biomart. ',
