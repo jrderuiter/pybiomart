@@ -1,5 +1,11 @@
 from setuptools import setup, find_packages
 
+try:
+    import pypandoc
+    description = pypandoc.convert('README.md', 'rst')
+except (IOError, ImportError):
+    description = open('README.md').read()
+
 install_requires = ['future', 'pandas', 'requests', 'requests_cache']
 
 setup(
@@ -9,7 +15,7 @@ setup(
     download_url='https://github.com/jrderuiter/pybiomart/tarball/0.0.3',
     author='Julian de Ruiter',
     author_email='julianderuiter@gmail.com',
-    description='A simple pythonic interface to biomart. ',
+    description=description,
     license='MIT',
     packages=find_packages(),
     zip_safe=True,
