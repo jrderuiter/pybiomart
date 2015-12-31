@@ -1,0 +1,9 @@
+name: pybiomart
+dependencies:
+    - python=3.5
+    - future
+    - pandas
+    - requests
+    - pip:
+        - requests_cache
+        - git+https://github.com/jrderuiter/pybiomart.git
