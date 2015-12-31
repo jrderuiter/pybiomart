@@ -2,3 +2,4 @@
 __pycache__
 pybiomart.egg-info
 *.pyc
+dist
