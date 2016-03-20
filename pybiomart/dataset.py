@@ -3,6 +3,7 @@ from __future__ import absolute_import, division, print_function
 # pylint: disable=wildcard-import,redefined-builtin,unused-wildcard-import
 from builtins import *
 # pylint: enable=wildcard-import,redefined-builtin,unused-wildcard-import
+from future.utils import native_str
 
 from io import StringIO
 from xml.etree import ElementTree
@@ -200,7 +201,7 @@ class Dataset(ServerBase):
         root.set('virtualSchemaName', self._virtual_schema)
         root.set('formatter', 'TSV')
         root.set('header', '1')
-        root.set('uniqueRows', str(int(only_unique)))
+        root.set('uniqueRows', native_str(int(only_unique)))
         root.set('datasetConfigVersion', '0.6')
 
         # Add dataset element.
