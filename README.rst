@@ -4,7 +4,8 @@ PyBiomart
 .. image:: https://travis-ci.org/jrderuiter/pybiomart.svg?branch=develop
     :target: https://travis-ci.org/jrderuiter/pybiomart
 
-.. image:: https://coveralls.io/repos/github/jrderuiter/pybiomart/badge.svg?branch=develop :target: https://coveralls.io/github/jrderuiter/pybiomart?branch=develop
+.. image:: https://coveralls.io/repos/github/jrderuiter/pybiomart/badge.svg?branch=develop
+    :target: https://coveralls.io/github/jrderuiter/pybiomart?branch=develop
 
 PyBiomart is a Python library that provides an easy interface to
 databases implementing the BioMart software suite
