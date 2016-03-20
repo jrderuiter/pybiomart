@@ -28,5 +28,9 @@ install:
 
     # Install test dependencies.
     - conda install pytest mock
+    - pip install pytest-cov python-coveralls
 
-script: py.test
+script: py.test --cov pybiomart --cov-report term-missing
+
+after_success:
+    - coveralls
