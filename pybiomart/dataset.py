@@ -10,7 +10,9 @@ from xml.etree import ElementTree
 
 import pandas as pd
 
+# pylint: disable=import-error
 from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
+# pylint: enable=import-error
 
 
 class Dataset(ServerBase):

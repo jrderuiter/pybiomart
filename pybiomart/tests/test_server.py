@@ -5,10 +5,14 @@ import mock
 import pytest
 import pkg_resources
 
+# pylint: disable=import-error
 from ._mock import MockResponse
 
+# pylint: disable=import-self
 from .. import server
 from ..server import Server
+
+# pylint: disable=redefined-outer-name,unused-import
 
 
 @pytest.fixture
@@ -27,6 +31,7 @@ def marts_response():
         return MockResponse(text=pickle.load(file_))
 
 
+# pylint: disable=no-self-use
 class TestServer(object):
 
     def test_marts(self, marts_response):

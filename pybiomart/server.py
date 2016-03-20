@@ -6,8 +6,10 @@ from builtins import *
 
 from xml.etree.ElementTree import fromstring as xml_from_string
 
+# pylint: disable=import-error
 from .base import ServerBase
 from .mart import Mart
+# pylint: enable=import-error
 
 
 class Server(ServerBase):

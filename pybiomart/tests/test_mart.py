@@ -5,11 +5,14 @@ import mock
 import pytest
 import pkg_resources
 
+# pylint: disable=import-error
 from ._mock import MockResponse
 
+# pylint: disable=import-self
 from .. import mart
 from ..server import Server
 
+# pylint: disable=redefined-outer-name,unused-import
 from .test_server import marts_response
 
 
@@ -30,6 +33,7 @@ def datasets_response():
         return MockResponse(text=pickle.load(file_))
 
 
+# pylint: disable=no-self-use
 @pytest.fixture
 def mart_(marts_response):
     """Returns a default mart for testing."""

@@ -2,21 +2,23 @@ import mock
 import pytest
 import requests
 
+# pylint: disable=import-error
+from ._mock import MockResponse
+
+# pylint: disable=import-self
 from .. import base
 
+# pylint: disable=redefined-outer-name,unused-import
 
 @pytest.fixture
 def default_url():
     return '{}:{}{}'.format(base.DEFAULT_HOST, base.DEFAULT_PORT,
                             base.DEFAULT_PATH)
 
-class MockRequest(object):
 
-    def raise_for_status(self):
-        pass
-
-
+# pylint: disable=no-self-use
 class TestBase(object):
+    """Tests for ServerBase class."""
 
     def test_basic(self, default_url):
         """Tests default instantation."""
@@ -55,7 +57,7 @@ class TestBase(object):
     def test_get(self, default_url):
         """Tests get invocation."""
 
-        req = MockRequest()
+        req = MockResponse()
 
         with mock.patch.object(requests, 'get', return_value=req) as mock_get:
             base_obj = base.ServerBase()
@@ -66,7 +68,7 @@ class TestBase(object):
     def test_get_with_params(self, default_url):
         """Tests get invocation with custom parameters."""
 
-        req = MockRequest()
+        req = MockResponse()
 
         with mock.patch.object(requests, 'get', return_value=req) as mock_get:
             base_obj = base.ServerBase()

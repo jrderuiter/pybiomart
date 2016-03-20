@@ -5,10 +5,13 @@ import mock
 import pytest
 import pkg_resources
 
+# pylint: disable=import-error
 from ._mock import MockResponse
 
+# pylint: disable=import-self
 from .. import dataset
 
+# pylint: disable=redefined-outer-name,unused-import
 from .test_server import marts_response
 from .test_mart import mart_, datasets_response
 
@@ -71,6 +74,7 @@ def query_response():
         return MockResponse(pickle.load(file_))
 
 
+# pylint: disable=no-self-use
 class TestDataset(object):
 
     def test_attibutes(self, dataset_):
@@ -146,8 +150,7 @@ class TestDataset(object):
 
         dataset_ = dataset_with_config
 
-        with mock.patch.object(dataset_, 'get',
-                               return_value=query_response) as mock_get:
+        with mock.patch.object(dataset_, 'get', return_value=query_response):
             # Perform query.
             attributes, filters = query_params
             res = dataset_.query(attributes=attributes,

@@ -8,8 +8,10 @@ from io import StringIO
 
 import pandas as pd
 
+# pylint: disable=import-error
 from .base import ServerBase, DEFAULT_SCHEMA
 from .dataset import Dataset
+# pylint: enable=import-error
 
 
 class Mart(ServerBase):
