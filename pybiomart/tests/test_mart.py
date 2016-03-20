@@ -5,14 +5,16 @@ import mock
 import pytest
 import pkg_resources
 
-from .. import mart as mart_mod
+from ._mock import MockResponse
+
+from .. import mart
 from ..server import Server
 
-from .test_server import marts_request
+from .test_server import marts_response
 
 
 @pytest.fixture
-def datasets_request():
+def datasets_response():
     """Loads cached mart request from pickle."""
 
     # Code for saving pickle.
@@ -21,38 +23,37 @@ def datasets_request():
     #     pickle.dump(req, file=file_, protocol=2)
 
     # Load cached request.
-    rel_path = os.path.join('tests', 'data', 'datasets_request.pkl')
-    file_path = pkg_resources.resource_filename(mart_mod.__name__, rel_path)
+    rel_path = os.path.join('tests', 'data', 'datasets_response.pkl')
+    file_path = pkg_resources.resource_filename(mart.__name__, rel_path)
 
     with open(file_path, 'rb') as file_:
-        return pickle.load(file_)
+        return MockResponse(text=pickle.load(file_))
 
 
 @pytest.fixture
-def mart(marts_request):
+def mart_(marts_response):
     """Returns a default mart for testing."""
 
-    with mock.patch.object(Server, 'get', return_value=marts_request):
+    with mock.patch.object(Server, 'get', return_value=marts_response):
         server_obj = Server(host='http://www.ensembl.org')
         return server_obj['ENSEMBL_MART_ENSEMBL']
 
 
 class TestMart(object):
 
-    def test_attributes(self, mart):
-        assert mart.name == 'ENSEMBL_MART_ENSEMBL'
-        assert mart.display_name == 'Ensembl Genes 84'
-        assert mart.database_name == 'ensembl_mart_84'
+    def test_attributes(self, mart_):
+        assert mart_.name == 'ENSEMBL_MART_ENSEMBL'
+        assert mart_.display_name == 'Ensembl Genes 84'
+        assert mart_.database_name == 'ensembl_mart_84'
 
-    def test_datasets(self, mart, datasets_request):
-        with mock.patch.object(mart_mod.Mart, 'get',
-                               return_value=datasets_request) as mock_get:
-            assert len(mart.datasets) > 0
+    def test_datasets(self, mart_, datasets_response):
+        with mock.patch.object(mart_, 'get',
+                               return_value=datasets_response) as mock_get:
+            assert len(mart_.datasets) > 0
             mock_get.assert_called_once_with(type='datasets',
                                              mart='ENSEMBL_MART_ENSEMBL')
 
-    def test_get_item(self, mart, datasets_request):
-        with mock.patch.object(mart_mod.Mart, 'get',
-                               return_value=datasets_request) as mock_get:
-            dataset = mart['mmusculus_gene_ensembl']
+    def test_get_item(self, mart_, datasets_response):
+        with mock.patch.object(mart_, 'get', return_value=datasets_response):
+            dataset = mart_['mmusculus_gene_ensembl']
             assert dataset.name == 'mmusculus_gene_ensembl'

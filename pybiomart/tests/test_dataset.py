@@ -5,44 +5,46 @@ import mock
 import pytest
 import pkg_resources
 
+from ._mock import MockResponse
+
 from .. import dataset
 
-from .test_server import marts_request
-from .test_mart import datasets_request, mart
+from .test_server import marts_response
+from .test_mart import mart_, datasets_response
 
 
 @pytest.fixture
-def dataset_(mart, datasets_request):
+def dataset_(mart_, datasets_response):
     """Returns a default dataset for testing."""
 
-    with mock.patch.object(mart, 'get', return_value=datasets_request):
-        return mart.datasets['mmusculus_gene_ensembl']
+    with mock.patch.object(mart_, 'get', return_value=datasets_response):
+        return mart_.datasets['mmusculus_gene_ensembl']
 
 
 @pytest.fixture
-def dataset_with_config(dataset_, config_request):
+def dataset_with_config(dataset_, config_response):
     """Returns default dataset with cached configuration."""
 
-    with mock.patch.object(dataset_, 'get', return_value=config_request):
+    with mock.patch.object(dataset_, 'get', return_value=config_response):
         dataset_.attributes
     return dataset_
 
 
 @pytest.fixture
-def config_request():
+def config_response():
     """Loads cached configuration request."""
 
     # Dumped using the following code.
     # req = dataset.get(type='configuration', dataset=dataset_.name)
-    # with open('config_request.pkl', 'wb') as file_:
+    # with open('config_response.pkl', 'wb') as file_:
     #    pickle.dump(req, file=file_, protocol=2)
 
     # Load cached request.
-    rel_path = os.path.join('tests', 'data', 'config_request.pkl')
+    rel_path = os.path.join('tests', 'data', 'config_response.pkl')
     file_path = pkg_resources.resource_filename(dataset.__name__, rel_path)
 
     with open(file_path, 'rb') as file_:
-        return pickle.load(file_)
+        return MockResponse(pickle.load(file_))
 
 
 @pytest.fixture
@@ -53,7 +55,7 @@ def query_params():
 
 
 @pytest.fixture
-def query_request():
+def query_response():
     """Loads cached query request."""
 
     # Dumped from inside query using the below code.
@@ -62,11 +64,11 @@ def query_request():
     #    pickle.dump(response, file=file_, protocol=2)
 
     # Load cached request.
-    rel_path = os.path.join('tests', 'data', 'query_request.pkl')
+    rel_path = os.path.join('tests', 'data', 'query_response.pkl')
     file_path = pkg_resources.resource_filename(dataset.__name__, rel_path)
 
     with open(file_path, 'rb') as file_:
-        return pickle.load(file_)
+        return MockResponse(pickle.load(file_))
 
 
 class TestDataset(object):
@@ -76,11 +78,11 @@ class TestDataset(object):
         assert dataset_.name == 'mmusculus_gene_ensembl'
         assert dataset_.display_name == 'Mus musculus genes (GRCm38.p4)'
 
-    def test_fetch_configuration(self, dataset_, config_request):
+    def test_fetch_configuration(self, dataset_, config_response):
         """Tests fetching of filters/attributes."""
 
         with mock.patch.object(dataset_, 'get',
-                               return_value=config_request) as mock_get:
+                               return_value=config_response) as mock_get:
 
             assert len(dataset_.filters) > 0
             assert len(dataset_.attributes) > 0
@@ -88,10 +90,10 @@ class TestDataset(object):
             mock_get.assert_called_once_with(type='configuration',
                                              dataset=dataset_.name)
 
-    def test_fetch_attribute(self, dataset_, config_request):
+    def test_fetch_attribute(self, dataset_, config_response):
         """Tests attributes of example attribute."""
 
-        with mock.patch.object(dataset_, 'get', return_value=config_request):
+        with mock.patch.object(dataset_, 'get', return_value=config_response):
 
             # Test example attribute.
             attr = dataset_.attributes['ensembl_gene_id']
@@ -100,10 +102,10 @@ class TestDataset(object):
             assert attr.description == 'Ensembl Stable ID of the Gene'
             assert attr.default
 
-    def test_fetch_filters(self, dataset_, config_request):
+    def test_fetch_filters(self, dataset_, config_response):
         """Tests attributes of example filter."""
 
-        with mock.patch.object(dataset_, 'get', return_value=config_request):
+        with mock.patch.object(dataset_, 'get', return_value=config_response):
 
             # Test example filter.
             filt = dataset_.filters['chromosome_name']
@@ -111,13 +113,13 @@ class TestDataset(object):
             assert filt.type == 'list'
             assert filt.description == ''
 
-    def test_query(self, dataset_with_config, query_params, query_request):
+    def test_query(self, dataset_with_config, query_params, query_response):
         """Tests example query."""
 
         dataset_ = dataset_with_config
 
         with mock.patch.object(dataset_, 'get',
-                               return_value=query_request) as mock_get:
+                               return_value=query_response) as mock_get:
             # Perform query.
             attributes, filters = query_params
             res = dataset_.query(attributes=attributes,
@@ -139,13 +141,13 @@ class TestDataset(object):
             mock_get.assert_called_once_with(query=query)
 
     def test_query_attr_name(self, dataset_with_config,
-                             query_params, query_request):
+                             query_params, query_response):
         """Tests example query, renaming columns to names."""
 
         dataset_ = dataset_with_config
 
         with mock.patch.object(dataset_, 'get',
-                               return_value=query_request) as mock_get:
+                               return_value=query_response) as mock_get:
             # Perform query.
             attributes, filters = query_params
             res = dataset_.query(attributes=attributes,
