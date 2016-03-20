@@ -1,8 +1,8 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import (ascii, bytes, chr, dict, filter, hex, input,
-                      int, map, next, oct, open, pow, range, round,
-                      str, super, zip)
+from __future__ import absolute_import, division, print_function
+
+# pylint: disable=wildcard-import,redefined-builtin,unused-wildcard-import
+from builtins import *
+# pylint: enable=wildcard-import,redefined-builtin,unused-wildcard-import
 
 from io import StringIO
 
@@ -113,7 +113,7 @@ class Mart(ServerBase):
                        virtual_schema=row['virtual_schema'])
 
     def __repr__(self):
-        return (('<biomart.Mart name={!r}, database_name={!r},'
-                 ' display_name={!r}>')
+        return (('<biomart.Mart name={!r}, display_name={!r},'
+                 ' database_name={!r}>')
                 .format(self._name, self._display_name,
-                        self._database_name, self.host, self.path))
+                        self._database_name))

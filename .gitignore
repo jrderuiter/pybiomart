@@ -3,3 +3,8 @@ __pycache__
 pybiomart.egg-info
 *.pyc
 dist
+.coverage
+.DS_Store
+.cache
+htmlcov
+RELEASE-VERSION

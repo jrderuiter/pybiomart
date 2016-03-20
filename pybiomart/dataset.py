@@ -1,12 +1,13 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import (ascii, bytes, chr, dict, filter, hex, input,
-                      int, map, next, oct, open, pow, range, round,
-                      str, super, zip)
+from __future__ import absolute_import, division, print_function
 
-import pandas as pd
+# pylint: disable=wildcard-import,redefined-builtin,unused-wildcard-import
+from builtins import *
+# pylint: enable=wildcard-import,redefined-builtin,unused-wildcard-import
+
 from io import StringIO
 from xml.etree import ElementTree
+
+import pandas as pd
 
 from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
 
@@ -156,7 +157,8 @@ class Dataset(ServerBase):
                                 description=attrib.get('description', ''),
                                 default=default)
 
-    def query(self, attributes=None, filters=None, only_unique=True):
+    def query(self, attributes=None, filters=None,
+              only_unique=True, use_attr_names=False):
         """Queries the dataset to retrieve the contained data.
 
         Args:
@@ -169,6 +171,9 @@ class Dataset(ServerBase):
                 filters property for a list of valid filters.
             only_unique (bool): Whether to return only rows containing
                 unique values (True) or to include duplicate rows (False).
+            use_attr_names (bool): Whether to use the attribute names
+                as column names in the result (True) or the attribute
+                display names (False).
 
         Returns:
             pandas.DataFrame: DataFrame containing the query results.
@@ -237,6 +242,12 @@ class Dataset(ServerBase):
 
         # Parse results into a DataFrame.
         result = pd.read_csv(StringIO(response.text), sep='\t')
+
+        if use_attr_names:
+            # Rename columns with attribute names instead of display names.
+            column_map = {self.attributes[attr].display_name: attr
+                          for attr in attributes}
+            result.rename(columns=column_map, inplace=True)
 
         return result
 

@@ -1,8 +1,8 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import (ascii, bytes, chr, dict, filter, hex, input,
-                      int, map, next, oct, open, pow, range, round,
-                      str, super, zip)
+from __future__ import absolute_import, division, print_function
+
+# pylint: disable=wildcard-import,redefined-builtin,unused-wildcard-import
+from builtins import *
+# pylint: enable=wildcard-import,redefined-builtin,unused-wildcard-import
 
 import requests
 import requests_cache
