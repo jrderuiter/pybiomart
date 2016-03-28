@@ -1,11 +1,12 @@
 from setuptools import setup, find_packages
-from version import get_git_version
+import versioneer
 
 install_requires = ['future', 'pandas', 'requests', 'requests_cache']
 
 setup(
     name='pybiomart',
-    version=get_git_version(),
+    version=versioneer.get_version(),
+    cmdclass=versioneer.get_cmdclass(),
     url='https://github.com/jrderuiter/pybiomart',
     download_url='https://github.com/jrderuiter/pybiomart/tarball/0.0.3',
     author='Julian de Ruiter',

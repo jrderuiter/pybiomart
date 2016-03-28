@@ -1,1 +1,2 @@
-include RELEASE-VERSION
+include versioneer.py
+include pybiomart/_version.py
