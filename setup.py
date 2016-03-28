@@ -8,7 +8,7 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     url='https://github.com/jrderuiter/pybiomart',
-    download_url='https://github.com/jrderuiter/pybiomart/tarball/0.0.3',
+    download_url='',
     author='Julian de Ruiter',
     author_email='julianderuiter@gmail.com',
     description='A simple pythonic interface to biomart.',
