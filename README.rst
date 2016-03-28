@@ -7,12 +7,17 @@ PyBiomart
 .. image:: https://coveralls.io/repos/github/jrderuiter/pybiomart/badge.svg?branch=develop
     :target: https://coveralls.io/github/jrderuiter/pybiomart?branch=develop
 
+.. image:: https://readthedocs.org/projects/pip/badge/?version=stable
+    :target: https://pybiomart.readthedocs.org
+
 A simple and pythonic biomart interface for Python.
 
 The intent of pybiomart is to provide a simple interface to biomart, which can be used to easily query biomart databases from Python. In this sense, pybiomart aims to provide functionality similar to packages such as biomaRt (which provides access to biomart from R).
 
 Documentation
 ----------------
+
+Detailed documentation is available at: `https://pybiomart.readthedocs.org <https://pybiomart.readthedocs.org>`_.
 
 Examples
 ----------------

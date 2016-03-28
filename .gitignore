@@ -8,3 +8,4 @@ dist
 .cache
 htmlcov
 RELEASE-VERSION
+docs/_build
