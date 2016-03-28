@@ -16,15 +16,31 @@ from .dataset import Dataset
 
 class Mart(ServerBase):
 
-    """Biomart mart.
+    """Class representing a biomart mart.
 
-    Represents a specific mart on the biomart server.
+    Used to represent specific mart instances on the server. Provides
+    functionality for listing and loading the datasets that are available
+    in the corresponding mart.
 
-    Attributes:
+    Args:
         name (str): Name of the mart.
-        display_name (str): Display name of the mart.
         database_name (str): ID of the mart on the host.
-        datasets (list of Datasets): List of datasets in this mart.
+        display_name (str): Display name of the mart.
+        host (str): Url of host to connect to.
+        path (str): Path on the host to access to the biomart service.
+        port (int): Port to use for the connection.
+        use_cache (bool): Whether to cache requests.
+        virtual_schema (str): The virtual schema of the dataset.
+
+    Examples:
+
+        Listing datasets:
+            >>> server = Server(host='http://www.ensembl.org')
+            >>> mart = server.['ENSEMBL_MART_ENSEMBL']
+            >>> mart.list_datasets()
+
+        Selecting a dataset:
+            >>> dataset = mart['hsapiens_gene_ensembl']
 
     """
 
@@ -34,29 +50,6 @@ class Mart(ServerBase):
     def __init__(self, name, database_name, display_name,
                  host=None, path=None, port=None, use_cache=True,
                  virtual_schema=DEFAULT_SCHEMA, extra_params=None):
-        """mart constructor.
-
-        Args:
-            name (str): Name of the mart.
-            database_name (str): ID of the mart on the host.
-            display_name (str): Display name of the mart.
-            host (str): Url of host to connect to.
-            path (str): Path on the host to access to the biomart service.
-            port (int): Port to use for the connection.
-            use_cache (bool): Whether to cache requests.
-            virtual_schema (str): The virtual schema of the dataset.
-
-        Examples:
-            Getting the mart:
-                >>> from pybiomart import Server
-                >>> server = Server(host='http://www.ensembl.org')
-                >>> mart = server.marts['ENSEMBL_MART_ENSEMBL']
-
-            Getting a mart from the mart:
-                >>> mart.datasets['hsapiens_gene_ensembl']
-
-        """
-
         super().__init__(host=host, path=path,
                          port=port, use_cache=use_cache)
 
@@ -74,7 +67,7 @@ class Mart(ServerBase):
 
     @property
     def name(self):
-        """Name of the mart."""
+        """Name of the mart (used as id)."""
         return self._name
 
     @property
@@ -84,7 +77,7 @@ class Mart(ServerBase):
 
     @property
     def database_name(self):
-        """ID of the mart on the host."""
+        """Database name of the mart on the host."""
         return self._database_name
 
     @property
@@ -93,6 +86,20 @@ class Mart(ServerBase):
         if self._datasets is None:
             self._datasets = self._fetch_datasets()
         return self._datasets
+
+    def list_datasets(self):
+        """Lists available datasets in a readable DataFrame format.
+
+        Returns:
+            pd.DataFrame: Frame listing available datasets.
+        """
+        def _row_gen(attributes):
+            for attr in attributes.values():
+                yield (attr.name, attr.display_name)
+
+        return pd.DataFrame.from_records(
+            _row_gen(self.datasets),
+            columns=['name', 'display_name'])
 
     def _fetch_datasets(self):
         # Get datasets using biomart.

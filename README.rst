@@ -43,9 +43,8 @@ Retrieving a dataset directly with known dataset name:
 Dependencies
 ------------
 
--  Python 3.3+, Python 2.7 (legacy Python)
--  requests, requests-cache
--  pandas
+-  Python 3.3+, Python 2.7
+-  future, pandas, requests, requests-cache
 
 Installation
 ------------

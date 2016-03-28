@@ -6,6 +6,8 @@ from builtins import *
 
 from xml.etree.ElementTree import fromstring as xml_from_string
 
+import pandas as pd
+
 # pylint: disable=import-error
 from .base import ServerBase
 from .mart import Mart
@@ -14,21 +16,25 @@ from .mart import Mart
 
 class Server(ServerBase):
 
-    """Biomart server class.
+    """Class representing a biomart server.
 
-    Represents a biomart server. Typically used as main entry point to the
-    biomart server, by providing functionality for listing and loading
-    the databases that are available on the server.
+    Typically used as main entry point to the biomart server. Provides
+    functionality for listing and loading the marts that are available
+    on the server.
 
-    Attributes:
-        marts (list of Marts): Marts available on the server.
+    Args:
+        host (str): Url of host to connect to.
+        path (str): Path on the host to access to the biomart service.
+        port (int): Port to use for the connection.
+        use_cache (bool): Whether to cache requests.
 
     Examples:
-        Connecting to a server:
-        >>> server = Server(host='http://www.ensembl.org')
+        Connecting to a server and listing available marts:
+            >>> server = Server(host='http://www.ensembl.org')
+            >>> server.list_marts()
 
-        Retrieving a database:
-        >>> database = server.marts['ENSEMBL_MART_ENSEMBL']
+        Retrieving a mart:
+            >>> mart = server['ENSEMBL_MART_ENSEMBL']
 
     """
 
@@ -42,16 +48,6 @@ class Server(ServerBase):
     }
 
     def __init__(self, host=None, path=None, port=None, use_cache=True):
-        """Server constructor.
-
-        Args:
-            host (str): Url of host to connect to.
-            path (str): Path on the host to access to the biomart service.
-            port (int): Port to use for the connection.
-            use_cache (bool): Whether to cache requests.
-
-        """
-
         super().__init__(host=host, path=path,
                          port=port, use_cache=use_cache)
         self._marts = None
@@ -61,10 +57,25 @@ class Server(ServerBase):
 
     @property
     def marts(self):
-        """List of available databases."""
+        """List of available marts."""
         if self._marts is None:
             self._marts = self._fetch_marts()
         return self._marts
+
+    def list_marts(self):
+        """Lists available marts in a readable DataFrame format.
+
+        Returns:
+            pd.DataFrame: Frame listing available marts.
+        """
+        def _row_gen(attributes):
+            for attr in attributes.values():
+                yield (attr.name, attr.display_name)
+
+        return pd.DataFrame.from_records(
+            _row_gen(self.marts),
+            columns=['name', 'display_name'])
+
 
     def _fetch_marts(self):
         response = self.get(type='registry')

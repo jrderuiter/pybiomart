@@ -17,21 +17,25 @@ from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
 
 class Dataset(ServerBase):
 
-    """Biomart dataset.
+    """Class representing a biomart dataset.
 
-    Main Dataset class that handles queries to biomart datasets. Queries
-    can select a subset of attributes (valid attributes are listed in
-    the attributes property) and filtered using a subset of filters
-    (valid filters are available in the filters property).
+    This class is responsible for handling queries to biomart
+    datasets. Queries can select a subset of attributes and can be filtered
+    using any available filters. A list of valid attributes is available in
+    the attributes property. If no attributes are given, a set of default
+    attributes is used. A list of valid filters is available in the filters
+    property. The type of value that can be specified for a given filter
+    depends on the filter as some filters accept single values, whilst others
+    can take lists of values.
 
-    Attributes:
+    Args:
         name (str): Id of the dataset.
         display_name (str): Display name of the dataset.
-        virtual_schema (str): Name of the datasets virtual schema.
-        filters (list of biomart.Filter): List of dataset filters.
-        attributes (dict of str: biomart.Attribute): List of attributes.
-        default_attributes (dict of str: biomartAttributes): List of
-            attributes that are marked as default for this dataset.
+        host (str): Url of host to connect to.
+        path (str): Path on the host to access to the biomart service.
+        port (int): Port to use for the connection.
+        use_cache (bool): Whether to cache requests.
+        virtual_schema (str): The virtual schema of the dataset.
 
     Examples:
         Directly connecting to a dataset:
@@ -49,24 +53,13 @@ class Dataset(ServerBase):
 
         Listing available filters:
             >>> dataset.filters
+            >>> dataset.list_filters()
 
     """
 
     def __init__(self, name, display_name='', host=None,
                  path=None, port=None, use_cache=True,
                  virtual_schema=DEFAULT_SCHEMA):
-        """Dataset constructor.
-
-        Args:
-            name (str): Id of the dataset.
-            display_name (str): Display name of the dataset.
-            host (str): Url of host to connect to.
-            path (str): Path on the host to access to the biomart service.
-            port (int): Port to use for the connection.
-            use_cache (bool): Whether to cache requests.
-            virtual_schema (str): The virtual schema of the dataset.
-
-        """
         super().__init__(host=host, path=path,
                          port=port, use_cache=use_cache)
 
@@ -80,7 +73,7 @@ class Dataset(ServerBase):
 
     @property
     def name(self):
-        """Id of the dataset."""
+        """Name of the dataset (used as dataset id)."""
         return self._name
 
     @property
@@ -90,7 +83,7 @@ class Dataset(ServerBase):
 
     @property
     def filters(self):
-        """List of filters available for the dataset (cached)."""
+        """List of filters available for the dataset."""
         if self._filters is None:
             self._filters, self._attributes = self._fetch_configuration()
         return self._filters
@@ -112,6 +105,11 @@ class Dataset(ServerBase):
         return self._default_attributes
 
     def list_attributes(self):
+        """Lists available attributes in a readable DataFrame format.
+
+        Returns:
+            pd.DataFrame: Frame listing available attributes.
+        """
         def _row_gen(attributes):
             for attr in attributes.values():
                 yield (attr.name, attr.display_name, attr.description)
@@ -119,6 +117,20 @@ class Dataset(ServerBase):
         return pd.DataFrame.from_records(
             _row_gen(self.attributes),
             columns=['name', 'display_name', 'description'])
+
+    def list_filters(self):
+        """Lists available filters in a readable DataFrame format.
+
+        Returns:
+            pd.DataFrame: Frame listing available filters.
+        """
+        def _row_gen(attributes):
+            for attr in attributes.values():
+                yield (attr.name, attr.type, attr.description)
+
+        return pd.DataFrame.from_records(
+            _row_gen(self.filters),
+            columns=['name', 'type', 'description'])
 
     def _fetch_configuration(self):
         # Get datasets using biomart.
@@ -165,10 +177,10 @@ class Dataset(ServerBase):
         """Queries the dataset to retrieve the contained data.
 
         Args:
-            attributes (list of str): Names of attributes to fetch in query.
+            attributes (list[str]): Names of attributes to fetch in query.
                 Attribute names must correspond to valid attributes. See
                 the attributes property for a list of valid attributes.
-            filters (dict of str: any): Dictionary of filters --> values
+            filters (dict[str,any]): Dictionary of filters --> values
                 to filter the dataset by. Filter names and values must
                 correspond to valid filters and filter values. See the
                 filters property for a list of valid filters.
