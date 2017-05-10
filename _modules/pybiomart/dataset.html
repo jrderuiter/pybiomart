@@ -1,0 +1,634 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybiomart.dataset &mdash; pybiomart 0.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pybiomart 0.2.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pybiomart
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">PyBiomart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pybiomart</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybiomart.dataset</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybiomart.dataset</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># pylint: disable=wildcard-import,redefined-builtin,unused-wildcard-import</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># pylint: enable=wildcard-import,redefined-builtin,unused-wildcard-import</span>
+<span class="kn">from</span> <span class="nn">future.utils</span> <span class="k">import</span> <span class="n">native_str</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+<span class="kn">from</span> <span class="nn">xml.etree</span> <span class="k">import</span> <span class="n">ElementTree</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># pylint: disable=import-error</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">ServerBase</span><span class="p">,</span> <span class="n">BiomartException</span><span class="p">,</span> <span class="n">DEFAULT_SCHEMA</span>
+
+<span class="c1"># pylint: enable=import-error</span>
+
+
+<div class="viewcode-block" id="Dataset"><a class="viewcode-back" href="../../api.html#pybiomart.Dataset">[docs]</a><span class="k">class</span> <span class="nc">Dataset</span><span class="p">(</span><span class="n">ServerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class representing a biomart dataset.</span>
+
+<span class="sd">    This class is responsible for handling queries to biomart</span>
+<span class="sd">    datasets. Queries can select a subset of attributes and can be filtered</span>
+<span class="sd">    using any available filters. A list of valid attributes is available in</span>
+<span class="sd">    the attributes property. If no attributes are given, a set of default</span>
+<span class="sd">    attributes is used. A list of valid filters is available in the filters</span>
+<span class="sd">    property. The type of value that can be specified for a given filter</span>
+<span class="sd">    depends on the filter as some filters accept single values, whilst others</span>
+<span class="sd">    can take lists of values.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): Id of the dataset.</span>
+<span class="sd">        display_name (str): Display name of the dataset.</span>
+<span class="sd">        host (str): Url of host to connect to.</span>
+<span class="sd">        path (str): Path on the host to access to the biomart service.</span>
+<span class="sd">        port (int): Port to use for the connection.</span>
+<span class="sd">        use_cache (bool): Whether to cache requests.</span>
+<span class="sd">        virtual_schema (str): The virtual schema of the dataset.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        Directly connecting to a dataset:</span>
+<span class="sd">            &gt;&gt;&gt; dataset = Dataset(name=&#39;hsapiens_gene_ensembl&#39;,</span>
+<span class="sd">            &gt;&gt;&gt;                   host=&#39;http://www.ensembl.org&#39;)</span>
+
+<span class="sd">        Querying the dataset:</span>
+<span class="sd">            &gt;&gt;&gt; dataset.query(attributes=[&#39;ensembl_gene_id&#39;,</span>
+<span class="sd">            &gt;&gt;&gt;                           &#39;external_gene_name&#39;],</span>
+<span class="sd">            &gt;&gt;&gt;               filters={&#39;chromosome_name&#39;: [&#39;1&#39;,&#39;2&#39;]})</span>
+
+<span class="sd">        Listing available attributes:</span>
+<span class="sd">            &gt;&gt;&gt; dataset.attributes</span>
+<span class="sd">            &gt;&gt;&gt; dataset.list_attributes()</span>
+
+<span class="sd">        Listing available filters:</span>
+<span class="sd">            &gt;&gt;&gt; dataset.filters</span>
+<span class="sd">            &gt;&gt;&gt; dataset.list_filters()</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+                 <span class="n">name</span><span class="p">,</span>
+                 <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+                 <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                 <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">virtual_schema</span><span class="o">=</span><span class="n">DEFAULT_SCHEMA</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">use_cache</span><span class="o">=</span><span class="n">use_cache</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span> <span class="o">=</span> <span class="n">display_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_virtual_schema</span> <span class="o">=</span> <span class="n">virtual_schema</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default_attributes</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Name of the dataset (used as dataset id).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Display name of the dataset.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of filters available for the dataset.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_configuration</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of attributes available for the dataset (cached).&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_filters</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_configuration</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of default attributes for the dataset.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default_attributes</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">name</span><span class="p">:</span> <span class="n">attr</span>
+                <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">attr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="kc">True</span>
+            <span class="p">}</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_attributes</span>
+
+<div class="viewcode-block" id="Dataset.list_attributes"><a class="viewcode-back" href="../../api.html#pybiomart.Dataset.list_attributes">[docs]</a>    <span class="k">def</span> <span class="nf">list_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lists available attributes in a readable DataFrame format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: Frame listing available attributes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_row_gen</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">display_name</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+            <span class="n">_row_gen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;display_name&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="Dataset.list_filters"><a class="viewcode-back" href="../../api.html#pybiomart.Dataset.list_filters">[docs]</a>    <span class="k">def</span> <span class="nf">list_filters</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lists available filters in a readable DataFrame format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: Frame listing available filters.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_row_gen</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+            <span class="n">_row_gen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;description&#39;</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_fetch_configuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Get datasets using biomart.</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;configuration&#39;</span><span class="p">,</span> <span class="n">dataset</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+
+        <span class="c1"># Check response for problems.</span>
+        <span class="k">if</span> <span class="s1">&#39;Problem retrieving configuration&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BiomartException</span><span class="p">(</span><span class="s1">&#39;Failed to retrieve dataset configuration, &#39;</span>
+                                   <span class="s1">&#39;check the dataset name and schema.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get filters and attributes from xml.</span>
+        <span class="n">xml</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">fromstring</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+
+        <span class="n">filters</span> <span class="o">=</span> <span class="p">{</span><span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">f</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filters_from_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">)}</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="p">{</span><span class="n">a</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">a</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_attributes_from_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">)}</span>
+
+        <span class="k">return</span> <span class="n">filters</span><span class="p">,</span> <span class="n">attributes</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_filters_from_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">xml</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;FilterDescription&#39;</span><span class="p">):</span>
+            <span class="n">attrib</span> <span class="o">=</span> <span class="n">node</span><span class="o">.</span><span class="n">attrib</span>
+            <span class="k">yield</span> <span class="n">Filter</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;internalName&#39;</span><span class="p">],</span> <span class="nb">type</span><span class="o">=</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_attributes_from_xml</span><span class="p">(</span><span class="n">xml</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">page_index</span><span class="p">,</span> <span class="n">page</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xml</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;AttributePage&#39;</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">page</span><span class="o">.</span><span class="n">iter</span><span class="p">(</span><span class="s1">&#39;AttributeDescription&#39;</span><span class="p">):</span>
+                <span class="n">attrib</span> <span class="o">=</span> <span class="n">desc</span><span class="o">.</span><span class="n">attrib</span>
+
+                <span class="c1"># Default attributes can only be from the first page.</span>
+                <span class="n">default</span> <span class="o">=</span> <span class="p">(</span><span class="n">page_index</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span>
+                           <span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;default&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="s1">&#39;true&#39;</span><span class="p">)</span>
+
+                <span class="k">yield</span> <span class="n">Attribute</span><span class="p">(</span>
+                    <span class="n">name</span><span class="o">=</span><span class="n">attrib</span><span class="p">[</span><span class="s1">&#39;internalName&#39;</span><span class="p">],</span>
+                    <span class="n">display_name</span><span class="o">=</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;displayName&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                    <span class="n">description</span><span class="o">=</span><span class="n">attrib</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span>
+                    <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Dataset.query"><a class="viewcode-back" href="../../api.html#pybiomart.Dataset.query">[docs]</a>    <span class="k">def</span> <span class="nf">query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span>
+              <span class="n">attributes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+              <span class="n">only_unique</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+              <span class="n">use_attr_names</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Queries the dataset to retrieve the contained data.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            attributes (list[str]): Names of attributes to fetch in query.</span>
+<span class="sd">                Attribute names must correspond to valid attributes. See</span>
+<span class="sd">                the attributes property for a list of valid attributes.</span>
+<span class="sd">            filters (dict[str,any]): Dictionary of filters --&gt; values</span>
+<span class="sd">                to filter the dataset by. Filter names and values must</span>
+<span class="sd">                correspond to valid filters and filter values. See the</span>
+<span class="sd">                filters property for a list of valid filters.</span>
+<span class="sd">            only_unique (bool): Whether to return only rows containing</span>
+<span class="sd">                unique values (True) or to include duplicate rows (False).</span>
+<span class="sd">            use_attr_names (bool): Whether to use the attribute names</span>
+<span class="sd">                as column names in the result (True) or the attribute</span>
+<span class="sd">                display names (False).</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pandas.DataFrame: DataFrame containing the query results.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Example query from Ensembl biomart:</span>
+        <span class="c1">#</span>
+        <span class="c1"># &lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;</span>
+        <span class="c1"># &lt;!DOCTYPE Query&gt;</span>
+        <span class="c1"># &lt;Query  virtualSchemaName = &quot;default&quot; formatter = &quot;TSV&quot; header = &quot;0&quot;</span>
+        <span class="c1">#  uniqueRows = &quot;0&quot; count = &quot;&quot; datasetConfigVersion = &quot;0.6&quot; &gt;</span>
+        <span class="c1">#   &lt;Dataset name = &quot;hsapiens_gene_ensembl&quot; interface = &quot;default&quot; &gt;</span>
+        <span class="c1">#       &lt;Filter name = &quot;chromosome_name&quot; value = &quot;1,2&quot;/&gt;</span>
+        <span class="c1">#       &lt;Filter name = &quot;end&quot; value = &quot;10000000&quot;/&gt;</span>
+        <span class="c1">#       &lt;Filter name = &quot;start&quot; value = &quot;1&quot;/&gt;</span>
+        <span class="c1">#       &lt;Attribute name = &quot;ensembl_gene_id&quot; /&gt;</span>
+        <span class="c1">#       &lt;Attribute name = &quot;ensembl_transcript_id&quot; /&gt;</span>
+        <span class="c1">#   &lt;/Dataset&gt;</span>
+        <span class="c1"># &lt;/Query&gt;</span>
+
+        <span class="c1"># Setup query element.</span>
+        <span class="n">root</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">Element</span><span class="p">(</span><span class="s1">&#39;Query&#39;</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;virtualSchemaName&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_virtual_schema</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;formatter&#39;</span><span class="p">,</span> <span class="s1">&#39;TSV&#39;</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;header&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;uniqueRows&#39;</span><span class="p">,</span> <span class="n">native_str</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">only_unique</span><span class="p">)))</span>
+        <span class="n">root</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;datasetConfigVersion&#39;</span><span class="p">,</span> <span class="s1">&#39;0.6&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Add dataset element.</span>
+        <span class="n">dataset</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;Dataset&#39;</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">dataset</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;interface&#39;</span><span class="p">,</span> <span class="s1">&#39;default&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Default to default attributes if none requested.</span>
+        <span class="k">if</span> <span class="n">attributes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default_attributes</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+        <span class="c1"># Add attribute elements.</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_attr_node</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">BiomartException</span><span class="p">(</span>
+                    <span class="s1">&#39;Unknown attribute </span><span class="si">{}</span><span class="s1">, check dataset attributes &#39;</span>
+                    <span class="s1">&#39;for a list of valid attributes.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">filters</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Add filter elements.</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">filters</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">filter_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_add_filter_node</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">filter_</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">BiomartException</span><span class="p">(</span>
+                        <span class="s1">&#39;Unknown filter </span><span class="si">{}</span><span class="s1">, check dataset filters &#39;</span>
+                        <span class="s1">&#39;for a list of valid filters.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Fetch response.</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">query</span><span class="o">=</span><span class="n">ElementTree</span><span class="o">.</span><span class="n">tostring</span><span class="p">(</span><span class="n">root</span><span class="p">))</span>
+
+        <span class="c1"># Raise exception if an error occurred.</span>
+        <span class="k">if</span> <span class="s1">&#39;Query ERROR&#39;</span> <span class="ow">in</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">BiomartException</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Parse results into a DataFrame.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">use_attr_names</span><span class="p">:</span>
+            <span class="c1"># Rename columns with attribute names instead of display names.</span>
+            <span class="n">column_map</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="n">display_name</span><span class="p">:</span> <span class="n">attr</span>
+                <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributes</span>
+            <span class="p">}</span>
+            <span class="n">result</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">columns</span><span class="o">=</span><span class="n">column_map</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_add_attr_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+        <span class="n">attr_el</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;Attribute&#39;</span><span class="p">)</span>
+        <span class="n">attr_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_add_filter_node</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">filter_</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Adds filter xml node to root.&quot;&quot;&quot;</span>
+        <span class="n">filter_el</span> <span class="o">=</span> <span class="n">ElementTree</span><span class="o">.</span><span class="n">SubElement</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="s1">&#39;Filter&#39;</span><span class="p">)</span>
+        <span class="n">filter_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">filter_</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Set filter value depending on type.</span>
+        <span class="k">if</span> <span class="n">filter_</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s1">&#39;boolean&#39;</span><span class="p">:</span>
+            <span class="c1"># Boolean case.</span>
+            <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">True</span> <span class="ow">or</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;included&#39;</span><span class="p">,</span> <span class="s1">&#39;only&#39;</span><span class="p">}:</span>
+                <span class="n">filter_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;excluded&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">False</span> <span class="ow">or</span> <span class="n">value</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;excluded&#39;</span><span class="p">:</span>
+                <span class="n">filter_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;excluded&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Invalid value for boolean filter (</span><span class="si">{}</span><span class="s1">)&#39;</span>
+                                 <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="c1"># List case.</span>
+            <span class="n">filter_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">value</span><span class="p">)))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Default case.</span>
+            <span class="n">filter_el</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;&lt;biomart.Dataset name=</span><span class="si">{!r}</span><span class="s1">, display_name=</span><span class="si">{!r}</span><span class="s1">&gt;&#39;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span><span class="p">))</span></div>
+
+
+<span class="k">class</span> <span class="nc">Attribute</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Biomart dataset attribute.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name (str): Attribute name.</span>
+<span class="sd">        display_name (str): Attribute display name.</span>
+<span class="sd">        description (str): Attribute description.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">display_name</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Attribute constructor.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Attribute name.</span>
+<span class="sd">            display_name (str): Attribute display name.</span>
+<span class="sd">            description (str): Attribute description.</span>
+<span class="sd">            default (bool): Whether the attribute is a default</span>
+<span class="sd">                attribute of the corresponding datasets.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span> <span class="o">=</span> <span class="n">display_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_default</span> <span class="o">=</span> <span class="n">default</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Name of the attribute.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Display name of the attribute.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Description of the attribute.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">default</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Whether this is a default attribute.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="s1">&#39;&lt;biomart.Attribute name=</span><span class="si">{!r}</span><span class="s1">,&#39;</span>
+                 <span class="s1">&#39; display_name=</span><span class="si">{!r}</span><span class="s1">, description=</span><span class="si">{!r}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span><span class="p">))</span>
+
+
+<span class="k">class</span> <span class="nc">Filter</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Biomart dataset filter.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        name (str): Filter name.</span>
+<span class="sd">        type (str): Type of the filter (boolean, int, etc.).</span>
+<span class="sd">        description (str): Filter description.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="nb">type</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Filter constructor.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            name (str): Filter name.</span>
+<span class="sd">            type (str): Type of the filter (boolean, int, etc.).</span>
+<span class="sd">            description (str): Filter description.</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_type</span> <span class="o">=</span> <span class="nb">type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_description</span> <span class="o">=</span> <span class="n">description</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">description</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Filter description.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_description</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;&lt;biomart.Filter name=</span><span class="si">{!r}</span><span class="s1">, type=</span><span class="si">{!r}</span><span class="s1">&gt;&#39;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type</span><span class="p">))</span>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Julian de Ruiter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,290 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Usage &mdash; pybiomart 0.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pybiomart 0.2.0 documentation" href="index.html"/>
+        <link rel="next" title="API" href="api.html"/>
+        <link rel="prev" title="Installation" href="installation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pybiomart
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">PyBiomart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#datasets">Datasets</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#querying">Querying</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#filtering">Filtering</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#servers-and-marts">Servers and Marts</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pybiomart</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Usage</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/usage.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="usage">
+<h1>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline">¶</a></h2>
+<p>There main interface of pybiomart is provided by the <em>Dataset</em> class. A <em>Dataset</em> instance can be constructed directly if the name of the dataset and the url of the host are known:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;hsapiens_gene_ensembl&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                  <span class="n">host</span><span class="o">=</span><span class="s1">&#39;http://www.ensembl.org&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="querying">
+<h3>Querying<a class="headerlink" href="#querying" title="Permalink to this headline">¶</a></h3>
+<p>Dataset instances can be used to query the biomart server using their <em>query</em> method. This method takes an optional argument <em>attributes</em> which specifies the attributes to be retrieved:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ensembl_gene_id&#39;</span><span class="p">,</span> <span class="s1">&#39;external_gene_name&#39;</span><span class="p">]})</span>
+</pre></div>
+</div>
+<p>The <em>query</em> method returns a pandas DataFrame instance, which contains a DataFrame representation of the requested attributes. If no attributes are given, the default attributes of the dataset are used. These default attributes can be identified using the <em>default_attributes</em> property of the dataset. A list of all available attributes can be obtained from the <em>attributes</em> property. Alternatively, a more convenient overview of all attributes can be obtained in DataFrame format using the <em>list_attributes</em> method.</p>
+</div>
+<div class="section" id="filtering">
+<h3>Filtering<a class="headerlink" href="#filtering" title="Permalink to this headline">¶</a></h3>
+<p>Dataset queries can be filtered to avoid fetching unneeded data from the server, thereby reducing the size of the result (and the required bandwidth):</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ensembl_gene_id&#39;</span><span class="p">,</span> <span class="s1">&#39;external_gene_name&#39;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>              <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chromosome_name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">]})</span>
+</pre></div>
+</div>
+<p>The available filters depend on the dataset. All available filters can be accessed using the <em>filters</em> property or the <em>list_filters</em> method, the latter of which returns an overview of available filters in a DataFrame format. The type of a filter describes what kind of values can be provided for a filter. For example, boolean filters require a boolean value, string filters require a string value, whilst list filters can take a list of values.</p>
+</div>
+</div>
+<div class="section" id="servers-and-marts">
+<h2>Servers and Marts<a class="headerlink" href="#servers-and-marts" title="Permalink to this headline">¶</a></h2>
+<p>If the exact dataset not known, the <em>Server</em> and <em>Mart</em> classes can be used to explore the available marts and datasets on a biomart server. A server instance can be constructed using an optional host url (the url <a class="reference external" href="http://www.biomart.org">http://www.biomart.org</a> is used by default). This instance can then be used to identify all available marts, either via the <em>marts</em> property or the <em>list_marts</em> method:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;http://www.ensembl.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">server</span><span class="o">.</span><span class="n">list_marts</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Marts can be accessed by using the mart name as an index for the marts property, or directly as an index on the server instance. This mart instance can then similarly be used to identify datasets available in the mart, using the marts <em>datasets</em> property or its <em>list_datasets</em> method:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mart</span> <span class="o">=</span> <span class="n">server</span><span class="p">[</span><span class="s1">&#39;ENSEMBL_MART_ENSEMBL&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mart</span><span class="o">.</span><span class="n">list_datasets</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Datasets can be retrieved from a mart instance by using the dataset name as an index on the mart object, or alternatively as an index for its <em>datasets</em> property.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">mart</span><span class="p">[</span><span class="s1">&#39;hsapiens_gene_ensembl&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="api.html" class="btn btn-neutral float-right" title="API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Julian de Ruiter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

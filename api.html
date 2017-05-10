@@ -1,0 +1,550 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>API &mdash; pybiomart 0.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="pybiomart 0.2.0 documentation" href="index.html"/>
+        <link rel="next" title="Contributing" href="contributing.html"/>
+        <link rel="prev" title="Usage" href="usage.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> pybiomart
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="index.html">PyBiomart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pybiomart-dataset">pybiomart.Dataset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pybiomart-server">pybiomart.Server</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pybiomart-mart">pybiomart.Mart</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pybiomart</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/api.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="api">
+<h1>API<a class="headerlink" href="#api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="pybiomart-dataset">
+<h2>pybiomart.Dataset<a class="headerlink" href="#pybiomart-dataset" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pybiomart.Dataset">
+<em class="property">class </em><code class="descclassname">pybiomart.</code><code class="descname">Dataset</code><span class="sig-paren">(</span><em>name</em>, <em>display_name=''</em>, <em>host=None</em>, <em>path=None</em>, <em>port=None</em>, <em>use_cache=True</em>, <em>virtual_schema='default'</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybiomart/dataset.html#Dataset"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybiomart.Dataset" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing a biomart dataset.</p>
+<p>This class is responsible for handling queries to biomart
+datasets. Queries can select a subset of attributes and can be filtered
+using any available filters. A list of valid attributes is available in
+the attributes property. If no attributes are given, a set of default
+attributes is used. A list of valid filters is available in the filters
+property. The type of value that can be specified for a given filter
+depends on the filter as some filters accept single values, whilst others
+can take lists of values.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) &#8211; Id of the dataset.</li>
+<li><strong>display_name</strong> (<em>str</em>) &#8211; Display name of the dataset.</li>
+<li><strong>host</strong> (<em>str</em>) &#8211; Url of host to connect to.</li>
+<li><strong>path</strong> (<em>str</em>) &#8211; Path on the host to access to the biomart service.</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; Port to use for the connection.</li>
+<li><strong>use_cache</strong> (<em>bool</em>) &#8211; Whether to cache requests.</li>
+<li><strong>virtual_schema</strong> (<em>str</em>) &#8211; The virtual schema of the dataset.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<dl class="docutils">
+<dt>Directly connecting to a dataset:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s1">&#39;hsapiens_gene_ensembl&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                  <span class="n">host</span><span class="o">=</span><span class="s1">&#39;http://www.ensembl.org&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+<dt>Querying the dataset:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">attributes</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;ensembl_gene_id&#39;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span>                          <span class="s1">&#39;external_gene_name&#39;</span><span class="p">],</span>
+<span class="gp">&gt;&gt;&gt; </span>              <span class="n">filters</span><span class="o">=</span><span class="p">{</span><span class="s1">&#39;chromosome_name&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;1&#39;</span><span class="p">,</span><span class="s1">&#39;2&#39;</span><span class="p">]})</span>
+</pre></div>
+</div>
+</dd>
+<dt>Listing available attributes:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">attributes</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">list_attributes</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+<dt>Listing available filters:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">filters</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span><span class="o">.</span><span class="n">list_filters</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="pybiomart.Dataset.attributes">
+<code class="descname">attributes</code><a class="headerlink" href="#pybiomart.Dataset.attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of attributes available for the dataset (cached).</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybiomart.Dataset.default_attributes">
+<code class="descname">default_attributes</code><a class="headerlink" href="#pybiomart.Dataset.default_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of default attributes for the dataset.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybiomart.Dataset.display_name">
+<code class="descname">display_name</code><a class="headerlink" href="#pybiomart.Dataset.display_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display name of the dataset.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybiomart.Dataset.filters">
+<code class="descname">filters</code><a class="headerlink" href="#pybiomart.Dataset.filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of filters available for the dataset.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybiomart.Dataset.list_attributes">
+<code class="descname">list_attributes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybiomart/dataset.html#Dataset.list_attributes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybiomart.Dataset.list_attributes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists available attributes in a readable DataFrame format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Frame listing available attributes.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybiomart.Dataset.list_filters">
+<code class="descname">list_filters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybiomart/dataset.html#Dataset.list_filters"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybiomart.Dataset.list_filters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists available filters in a readable DataFrame format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Frame listing available filters.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybiomart.Dataset.name">
+<code class="descname">name</code><a class="headerlink" href="#pybiomart.Dataset.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the dataset (used as dataset id).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybiomart.Dataset.query">
+<code class="descname">query</code><span class="sig-paren">(</span><em>attributes=None</em>, <em>filters=None</em>, <em>only_unique=True</em>, <em>use_attr_names=False</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybiomart/dataset.html#Dataset.query"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybiomart.Dataset.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Queries the dataset to retrieve the contained data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>attributes</strong> (<em>list</em><em>[</em><em>str</em><em>]</em><em></em>) &#8211; Names of attributes to fetch in query.
+Attribute names must correspond to valid attributes. See
+the attributes property for a list of valid attributes.</li>
+<li><strong>filters</strong> (<em>dict</em><em>[</em><em>str</em><em>,</em><em>any</em><em>]</em><em></em>) &#8211; Dictionary of filters &#8211;&gt; values
+to filter the dataset by. Filter names and values must
+correspond to valid filters and filter values. See the
+filters property for a list of valid filters.</li>
+<li><strong>only_unique</strong> (<em>bool</em>) &#8211; Whether to return only rows containing
+unique values (True) or to include duplicate rows (False).</li>
+<li><strong>use_attr_names</strong> (<em>bool</em>) &#8211; Whether to use the attribute names
+as column names in the result (True) or the attribute
+display names (False).</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">DataFrame containing the query results.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pandas.DataFrame</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pybiomart-server">
+<h2>pybiomart.Server<a class="headerlink" href="#pybiomart-server" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pybiomart.Server">
+<em class="property">class </em><code class="descclassname">pybiomart.</code><code class="descname">Server</code><span class="sig-paren">(</span><em>host=None</em>, <em>path=None</em>, <em>port=None</em>, <em>use_cache=True</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybiomart/server.html#Server"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybiomart.Server" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing a biomart server.</p>
+<p>Typically used as main entry point to the biomart server. Provides
+functionality for listing and loading the marts that are available
+on the server.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>host</strong> (<em>str</em>) &#8211; Url of host to connect to.</li>
+<li><strong>path</strong> (<em>str</em>) &#8211; Path on the host to access to the biomart service.</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; Port to use for the connection.</li>
+<li><strong>use_cache</strong> (<em>bool</em>) &#8211; Whether to cache requests.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<dl class="docutils">
+<dt>Connecting to a server and listing available marts:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;http://www.ensembl.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">server</span><span class="o">.</span><span class="n">list_marts</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+<dt>Retrieving a mart:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">mart</span> <span class="o">=</span> <span class="n">server</span><span class="p">[</span><span class="s1">&#39;ENSEMBL_MART_ENSEMBL&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="method">
+<dt id="pybiomart.Server.list_marts">
+<code class="descname">list_marts</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybiomart/server.html#Server.list_marts"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybiomart.Server.list_marts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists available marts in a readable DataFrame format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Frame listing available marts.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybiomart.Server.marts">
+<code class="descname">marts</code><a class="headerlink" href="#pybiomart.Server.marts" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of available marts.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="pybiomart-mart">
+<h2>pybiomart.Mart<a class="headerlink" href="#pybiomart-mart" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="pybiomart.Mart">
+<em class="property">class </em><code class="descclassname">pybiomart.</code><code class="descname">Mart</code><span class="sig-paren">(</span><em>name</em>, <em>database_name</em>, <em>display_name</em>, <em>host=None</em>, <em>path=None</em>, <em>port=None</em>, <em>use_cache=True</em>, <em>virtual_schema='default'</em>, <em>extra_params=None</em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybiomart/mart.html#Mart"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybiomart.Mart" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class representing a biomart mart.</p>
+<p>Used to represent specific mart instances on the server. Provides
+functionality for listing and loading the datasets that are available
+in the corresponding mart.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<em>str</em>) &#8211; Name of the mart.</li>
+<li><strong>database_name</strong> (<em>str</em>) &#8211; ID of the mart on the host.</li>
+<li><strong>display_name</strong> (<em>str</em>) &#8211; Display name of the mart.</li>
+<li><strong>host</strong> (<em>str</em>) &#8211; Url of host to connect to.</li>
+<li><strong>path</strong> (<em>str</em>) &#8211; Path on the host to access to the biomart service.</li>
+<li><strong>port</strong> (<em>int</em>) &#8211; Port to use for the connection.</li>
+<li><strong>use_cache</strong> (<em>bool</em>) &#8211; Whether to cache requests.</li>
+<li><strong>virtual_schema</strong> (<em>str</em>) &#8211; The virtual schema of the dataset.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Examples</p>
+<dl class="docutils">
+<dt>Listing datasets:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">server</span> <span class="o">=</span> <span class="n">Server</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="s1">&#39;http://www.ensembl.org&#39;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mart</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="p">[</span><span class="s1">&#39;ENSEMBL_MART_ENSEMBL&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">mart</span><span class="o">.</span><span class="n">list_datasets</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd>
+<dt>Selecting a dataset:</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">dataset</span> <span class="o">=</span> <span class="n">mart</span><span class="p">[</span><span class="s1">&#39;hsapiens_gene_ensembl&#39;</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<dl class="attribute">
+<dt id="pybiomart.Mart.database_name">
+<code class="descname">database_name</code><a class="headerlink" href="#pybiomart.Mart.database_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Database name of the mart on the host.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybiomart.Mart.datasets">
+<code class="descname">datasets</code><a class="headerlink" href="#pybiomart.Mart.datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of datasets in this mart.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybiomart.Mart.display_name">
+<code class="descname">display_name</code><a class="headerlink" href="#pybiomart.Mart.display_name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Display name of the mart.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="pybiomart.Mart.list_datasets">
+<code class="descname">list_datasets</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pybiomart/mart.html#Mart.list_datasets"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#pybiomart.Mart.list_datasets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Lists available datasets in a readable DataFrame format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">Frame listing available datasets.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">pd.DataFrame</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="pybiomart.Mart.name">
+<code class="descname">name</code><a class="headerlink" href="#pybiomart.Mart.name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Name of the mart (used as id).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contributing.html" class="btn btn-neutral float-right" title="Contributing" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="usage.html" class="btn btn-neutral" title="Usage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Julian de Ruiter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

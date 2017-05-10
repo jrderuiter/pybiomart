@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybiomart.server &mdash; pybiomart 0.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pybiomart 0.2.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pybiomart
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">PyBiomart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pybiomart</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybiomart.server</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybiomart.server</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># pylint: disable=wildcard-import,redefined-builtin,unused-wildcard-import</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># pylint: enable=wildcard-import,redefined-builtin,unused-wildcard-import</span>
+
+<span class="kn">from</span> <span class="nn">xml.etree.ElementTree</span> <span class="k">import</span> <span class="n">fromstring</span> <span class="k">as</span> <span class="n">xml_from_string</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># pylint: disable=import-error</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">ServerBase</span>
+<span class="kn">from</span> <span class="nn">.mart</span> <span class="k">import</span> <span class="n">Mart</span>
+
+<span class="c1"># pylint: enable=import-error</span>
+
+
+<div class="viewcode-block" id="Server"><a class="viewcode-back" href="../../api.html#pybiomart.Server">[docs]</a><span class="k">class</span> <span class="nc">Server</span><span class="p">(</span><span class="n">ServerBase</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Class representing a biomart server.</span>
+
+<span class="sd">    Typically used as main entry point to the biomart server. Provides</span>
+<span class="sd">    functionality for listing and loading the marts that are available</span>
+<span class="sd">    on the server.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        host (str): Url of host to connect to.</span>
+<span class="sd">        path (str): Path on the host to access to the biomart service.</span>
+<span class="sd">        port (int): Port to use for the connection.</span>
+<span class="sd">        use_cache (bool): Whether to cache requests.</span>
+
+<span class="sd">    Examples:</span>
+<span class="sd">        Connecting to a server and listing available marts:</span>
+<span class="sd">            &gt;&gt;&gt; server = Server(host=&#39;http://www.ensembl.org&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; server.list_marts()</span>
+
+<span class="sd">        Retrieving a mart:</span>
+<span class="sd">            &gt;&gt;&gt; mart = server[&#39;ENSEMBL_MART_ENSEMBL&#39;]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_MART_XML_MAP</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s1">&#39;name&#39;</span><span class="p">:</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;database_name&#39;</span><span class="p">:</span> <span class="s1">&#39;database&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;display_name&#39;</span><span class="p">:</span> <span class="s1">&#39;displayName&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;host&#39;</span><span class="p">:</span> <span class="s1">&#39;host&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;path&#39;</span><span class="p">:</span> <span class="s1">&#39;path&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;virtual_schema&#39;</span><span class="p">:</span> <span class="s1">&#39;serverVirtualSchema&#39;</span>
+    <span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">use_cache</span><span class="o">=</span><span class="n">use_cache</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_marts</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">marts</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">marts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of available marts.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_marts</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_marts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_marts</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_marts</span>
+
+<div class="viewcode-block" id="Server.list_marts"><a class="viewcode-back" href="../../api.html#pybiomart.Server.list_marts">[docs]</a>    <span class="k">def</span> <span class="nf">list_marts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lists available marts in a readable DataFrame format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: Frame listing available marts.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">_row_gen</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+            <span class="n">_row_gen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">marts</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;display_name&#39;</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_fetch_marts</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;registry&#39;</span><span class="p">)</span>
+
+        <span class="n">xml</span> <span class="o">=</span> <span class="n">xml_from_string</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">content</span><span class="p">)</span>
+        <span class="n">marts</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_mart_from_xml</span><span class="p">(</span><span class="n">child</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">xml</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="s1">&#39;MartURLLocation&#39;</span><span class="p">)</span>
+        <span class="p">]</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="n">m</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">m</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">marts</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_mart_from_xml</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">node</span><span class="p">):</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">attrib</span><span class="p">[</span><span class="n">v</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_MART_XML_MAP</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="n">params</span><span class="p">[</span><span class="s1">&#39;extra_params&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">k</span><span class="p">:</span> <span class="n">v</span>
+            <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">node</span><span class="o">.</span><span class="n">attrib</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_MART_XML_MAP</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">Mart</span><span class="p">(</span><span class="n">use_cache</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_cache</span><span class="p">,</span> <span class="o">**</span><span class="n">params</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">(</span><span class="s1">&#39;&lt;biomart.Server host=</span><span class="si">{!r}</span><span class="s1">, path=</span><span class="si">{!r}</span><span class="s1">, port=</span><span class="si">{!r}</span><span class="s1">&gt;&#39;</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Julian de Ruiter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

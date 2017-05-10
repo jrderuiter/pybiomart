@@ -1,0 +1,356 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>pybiomart.mart &mdash; pybiomart 0.2.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="../../genindex.html"/>
+        <link rel="search" title="Search" href="../../search.html"/>
+    <link rel="top" title="pybiomart 0.2.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Module code" href="../index.html"/> 
+
+  
+  <script src="../../_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> pybiomart
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.2.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../index.html">PyBiomart</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../authors.html">Credits</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../history.html">History</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">pybiomart</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+        
+      <li>pybiomart.mart</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <h1>Source code for pybiomart.mart</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span><span class="p">,</span> <span class="n">division</span><span class="p">,</span> <span class="n">print_function</span>
+
+<span class="c1"># pylint: disable=wildcard-import,redefined-builtin,unused-wildcard-import</span>
+<span class="kn">from</span> <span class="nn">builtins</span> <span class="k">import</span> <span class="o">*</span>
+<span class="c1"># pylint: enable=wildcard-import,redefined-builtin,unused-wildcard-import</span>
+
+<span class="kn">from</span> <span class="nn">io</span> <span class="k">import</span> <span class="n">StringIO</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="c1"># pylint: disable=import-error</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="k">import</span> <span class="n">ServerBase</span><span class="p">,</span> <span class="n">DEFAULT_SCHEMA</span>
+<span class="kn">from</span> <span class="nn">.dataset</span> <span class="k">import</span> <span class="n">Dataset</span>
+<span class="c1"># pylint: enable=import-error</span>
+
+
+<div class="viewcode-block" id="Mart"><a class="viewcode-back" href="../../api.html#pybiomart.Mart">[docs]</a><span class="k">class</span> <span class="nc">Mart</span><span class="p">(</span><span class="n">ServerBase</span><span class="p">):</span>
+
+    <span class="sd">&quot;&quot;&quot;Class representing a biomart mart.</span>
+
+<span class="sd">    Used to represent specific mart instances on the server. Provides</span>
+<span class="sd">    functionality for listing and loading the datasets that are available</span>
+<span class="sd">    in the corresponding mart.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): Name of the mart.</span>
+<span class="sd">        database_name (str): ID of the mart on the host.</span>
+<span class="sd">        display_name (str): Display name of the mart.</span>
+<span class="sd">        host (str): Url of host to connect to.</span>
+<span class="sd">        path (str): Path on the host to access to the biomart service.</span>
+<span class="sd">        port (int): Port to use for the connection.</span>
+<span class="sd">        use_cache (bool): Whether to cache requests.</span>
+<span class="sd">        virtual_schema (str): The virtual schema of the dataset.</span>
+
+<span class="sd">    Examples:</span>
+
+<span class="sd">        Listing datasets:</span>
+<span class="sd">            &gt;&gt;&gt; server = Server(host=&#39;http://www.ensembl.org&#39;)</span>
+<span class="sd">            &gt;&gt;&gt; mart = server.[&#39;ENSEMBL_MART_ENSEMBL&#39;]</span>
+<span class="sd">            &gt;&gt;&gt; mart.list_datasets()</span>
+
+<span class="sd">        Selecting a dataset:</span>
+<span class="sd">            &gt;&gt;&gt; dataset = mart[&#39;hsapiens_gene_ensembl&#39;]</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">RESULT_COLNAMES</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">,</span> <span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;display_name&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown2&#39;</span><span class="p">,</span>
+                       <span class="s1">&#39;unknown3&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown4&#39;</span><span class="p">,</span> <span class="s1">&#39;virtual_schema&#39;</span><span class="p">,</span> <span class="s1">&#39;unknown5&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">database_name</span><span class="p">,</span> <span class="n">display_name</span><span class="p">,</span>
+                 <span class="n">host</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">use_cache</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                 <span class="n">virtual_schema</span><span class="o">=</span><span class="n">DEFAULT_SCHEMA</span><span class="p">,</span> <span class="n">extra_params</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="n">host</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+                         <span class="n">port</span><span class="o">=</span><span class="n">port</span><span class="p">,</span> <span class="n">use_cache</span><span class="o">=</span><span class="n">use_cache</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_database_name</span> <span class="o">=</span> <span class="n">database_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span> <span class="o">=</span> <span class="n">display_name</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_virtual_schema</span> <span class="o">=</span> <span class="n">virtual_schema</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_extra_params</span> <span class="o">=</span> <span class="n">extra_params</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Name of the mart (used as id).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">display_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Display name of the mart.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">database_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Database name of the mart on the host.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_database_name</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List of datasets in this mart.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fetch_datasets</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_datasets</span>
+
+<div class="viewcode-block" id="Mart.list_datasets"><a class="viewcode-back" href="../../api.html#pybiomart.Mart.list_datasets">[docs]</a>    <span class="k">def</span> <span class="nf">list_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Lists available datasets in a readable DataFrame format.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            pd.DataFrame: Frame listing available datasets.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">_row_gen</span><span class="p">(</span><span class="n">attributes</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">attributes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">yield</span> <span class="p">(</span><span class="n">attr</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">attr</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+            <span class="n">_row_gen</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datasets</span><span class="p">),</span>
+            <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="s1">&#39;display_name&#39;</span><span class="p">])</span></div>
+
+    <span class="k">def</span> <span class="nf">_fetch_datasets</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Get datasets using biomart.</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s1">&#39;datasets&#39;</span><span class="p">,</span> <span class="n">mart</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">)</span>
+
+        <span class="c1"># Read result frame from response.</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">StringIO</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="p">,</span>
+                             <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">RESULT_COLNAMES</span><span class="p">)</span>
+
+        <span class="c1"># Convert result to a dict of datasets.</span>
+        <span class="n">datasets</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset_from_row</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">result</span><span class="o">.</span><span class="n">iterrows</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="p">{</span><span class="n">d</span><span class="o">.</span><span class="n">name</span><span class="p">:</span> <span class="n">d</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">datasets</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">_dataset_from_row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">row</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">Dataset</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">display_name</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;display_name&#39;</span><span class="p">],</span>
+                       <span class="n">host</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span> <span class="n">path</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">path</span><span class="p">,</span>
+                       <span class="n">port</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span> <span class="n">use_cache</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">use_cache</span><span class="p">,</span>
+                       <span class="n">virtual_schema</span><span class="o">=</span><span class="n">row</span><span class="p">[</span><span class="s1">&#39;virtual_schema&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="p">((</span><span class="s1">&#39;&lt;biomart.Mart name=</span><span class="si">{!r}</span><span class="s1">, display_name=</span><span class="si">{!r}</span><span class="s1">,&#39;</span>
+                 <span class="s1">&#39; database_name=</span><span class="si">{!r}</span><span class="s1">&gt;&#39;</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_display_name</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">_database_name</span><span class="p">))</span></div>
+</pre></div>
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2016, Julian de Ruiter.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
