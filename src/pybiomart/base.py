@@ -1,8 +1,8 @@
-from __future__ import (absolute_import, division,
-                        print_function, unicode_literals)
-from builtins import (ascii, bytes, chr, dict, filter, hex, input,
-                      int, map, next, oct, open, pow, range, round,
-                      str, super, zip)
+from __future__ import absolute_import, division, print_function
+
+# pylint: disable=wildcard-import,redefined-builtin,unused-wildcard-import
+from builtins import *
+# pylint: enable=wildcard-import,redefined-builtin,unused-wildcard-import
 
 import requests
 import requests_cache
@@ -12,11 +12,10 @@ DEFAULT_PATH = '/biomart/martservice'
 DEFAULT_PORT = 80
 DEFAULT_SCHEMA = 'default'
 
-requests_cache.install_cache('_pybiomart_cache')
+requests_cache.install_cache('.pybiomart')
 
 
 class ServerBase(object):
-
     """Base class that handles requests to the biomart server.
 
     Attributes:
@@ -28,8 +27,7 @@ class ServerBase(object):
 
     """
 
-    def __init__(self, host=None, path=None,
-                 port=None, use_cache=True):
+    def __init__(self, host=None, path=None, port=None, use_cache=True):
         """ServerBase constructor.
 
         Args:

@@ -1,14 +1,25 @@
 PyBiomart
 =========
 
-PyBiomart is a Python library that provides an easy interface to
-databases implementing the BioMart software suite
-(http://www.biomart.org).
+.. image:: https://travis-ci.org/jrderuiter/pybiomart.svg?branch=develop
+    :target: https://travis-ci.org/jrderuiter/pybiomart
+
+.. image:: https://coveralls.io/repos/github/jrderuiter/pybiomart/badge.svg?branch=develop
+    :target: https://coveralls.io/github/jrderuiter/pybiomart?branch=develop
+
+A simple and pythonic biomart interface for Python.
+
+The intent of pybiomart is to provide a simple interface to biomart, which can be used to easily query biomart databases from Python. In this sense, pybiomart aims to provide functionality similar to packages such as biomaRt (which provides access to biomart from R).
+
+Documentation
+-------------
+
+Documentation is available at: `https://jrderuiter.github.io/pybiomart <https://jrderuiter.github.io/pybiomart>`_.
 
 Examples
 --------
 
-Retrieving and querying a dataset using the server interace:
+Retrieving and querying a dataset using the server interface:
 
 .. code:: python
 
@@ -18,7 +29,7 @@ Retrieving and querying a dataset using the server interace:
 
     dataset = (server.marts['ENSEMBL_MART_ENSEMBL']
                      .datasets['hsapiens_gene_ensembl'])
-                     
+
     dataset.query(attributes=['ensembl_gene_id', 'external_gene_name'],
                   filters={'chromosome_name': ['1','2']})
 
@@ -30,23 +41,9 @@ Retrieving a dataset directly with known dataset name:
 
     dataset = Dataset(name='hsapiens_gene_ensembl',
                       host='http://www.ensembl.org')
-                      
+
     dataset.query(attributes=['ensembl_gene_id', 'external_gene_name'],
                   filters={'chromosome_name': ['1','2']})
-
-Dependencies
-------------
-
--  Python 3.3+, Python 2.7 (legacy Python)
--  requests, requests-cache
--  pandas
-
-Installation
-------------
-
-.. code:: {bash}
-
-    pip install git+git://github.com/jrderuiter/pybiomart.git#egg=pybiomart
 
 License
 -------

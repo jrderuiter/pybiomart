@@ -1,0 +1,5 @@
+[run]
+source = pybiomart
+
+[report]
+omit = pybiomart/_version.py
