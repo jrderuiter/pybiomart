@@ -9,3 +9,5 @@ dist
 htmlcov
 RELEASE-VERSION
 docs/_build
+.vscode
+.tox

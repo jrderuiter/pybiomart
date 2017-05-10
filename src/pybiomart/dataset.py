@@ -12,11 +12,11 @@ import pandas as pd
 
 # pylint: disable=import-error
 from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
+
 # pylint: enable=import-error
 
 
 class Dataset(ServerBase):
-
     """Class representing a biomart dataset.
 
     This class is responsible for handling queries to biomart
@@ -57,11 +57,15 @@ class Dataset(ServerBase):
 
     """
 
-    def __init__(self, name, display_name='', host=None,
-                 path=None, port=None, use_cache=True,
+    def __init__(self,
+                 name,
+                 display_name='',
+                 host=None,
+                 path=None,
+                 port=None,
+                 use_cache=True,
                  virtual_schema=DEFAULT_SCHEMA):
-        super().__init__(host=host, path=path,
-                         port=port, use_cache=use_cache)
+        super().__init__(host=host, path=path, port=port, use_cache=use_cache)
 
         self._name = name
         self._display_name = display_name
@@ -100,8 +104,10 @@ class Dataset(ServerBase):
         """List of default attributes for the dataset."""
         if self._default_attributes is None:
             self._default_attributes = {
-                name: attr for name, attr in self.attributes.items()
-                if attr.default is True}
+                name: attr
+                for name, attr in self.attributes.items()
+                if attr.default is True
+            }
         return self._default_attributes
 
     def list_attributes(self):
@@ -110,6 +116,7 @@ class Dataset(ServerBase):
         Returns:
             pd.DataFrame: Frame listing available attributes.
         """
+
         def _row_gen(attributes):
             for attr in attributes.values():
                 yield (attr.name, attr.display_name, attr.description)
@@ -124,13 +131,13 @@ class Dataset(ServerBase):
         Returns:
             pd.DataFrame: Frame listing available filters.
         """
+
         def _row_gen(attributes):
             for attr in attributes.values():
                 yield (attr.name, attr.type, attr.description)
 
         return pd.DataFrame.from_records(
-            _row_gen(self.filters),
-            columns=['name', 'type', 'description'])
+            _row_gen(self.filters), columns=['name', 'type', 'description'])
 
     def _fetch_configuration(self):
         # Get datasets using biomart.
@@ -138,12 +145,11 @@ class Dataset(ServerBase):
 
         # Check response for problems.
         if 'Problem retrieving configuration' in response.text:
-            raise BiomartException(
-                'Failed to retrieve dataset configuration, '
-                'check the dataset name and schema.')
+            raise BiomartException('Failed to retrieve dataset configuration, '
+                                   'check the dataset name and schema.')
 
         # Get filters and attributes from xml.
-        xml = ElementTree.fromstring(response.text)
+        xml = ElementTree.fromstring(response.content)
 
         filters = {f.name: f for f in self._filters_from_xml(xml)}
         attributes = {a.name: a for a in self._attributes_from_xml(xml)}
@@ -154,8 +160,8 @@ class Dataset(ServerBase):
     def _filters_from_xml(xml):
         for node in xml.iter('FilterDescription'):
             attrib = node.attrib
-            yield Filter(name=attrib['internalName'],
-                         type=attrib.get('type', ''))
+            yield Filter(
+                name=attrib['internalName'], type=attrib.get('type', ''))
 
     @staticmethod
     def _attributes_from_xml(xml):
@@ -167,13 +173,17 @@ class Dataset(ServerBase):
                 default = (page_index == 0 and
                            attrib.get('default', '') == 'true')
 
-                yield Attribute(name=attrib['internalName'],
-                                display_name=attrib.get('displayName', ''),
-                                description=attrib.get('description', ''),
-                                default=default)
+                yield Attribute(
+                    name=attrib['internalName'],
+                    display_name=attrib.get('displayName', ''),
+                    description=attrib.get('description', ''),
+                    default=default)
 
-    def query(self, attributes=None, filters=None,
-              only_unique=True, use_attr_names=False):
+    def query(self,
+              attributes=None,
+              filters=None,
+              only_unique=True,
+              use_attr_names=False):
         """Queries the dataset to retrieve the contained data.
 
         Args:
@@ -260,8 +270,10 @@ class Dataset(ServerBase):
 
         if use_attr_names:
             # Rename columns with attribute names instead of display names.
-            column_map = {self.attributes[attr].display_name: attr
-                          for attr in attributes}
+            column_map = {
+                self.attributes[attr].display_name: attr
+                for attr in attributes
+            }
             result.rename(columns=column_map, inplace=True)
 
         return result
@@ -300,7 +312,6 @@ class Dataset(ServerBase):
 
 
 class Attribute(object):
-
     """Biomart dataset attribute.
 
     Attributes:
@@ -353,7 +364,6 @@ class Attribute(object):
 
 
 class Filter(object):
-
     """Biomart dataset filter.
 
     Attributes:

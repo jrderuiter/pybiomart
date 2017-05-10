@@ -11,11 +11,11 @@ import pandas as pd
 # pylint: disable=import-error
 from .base import ServerBase
 from .mart import Mart
+
 # pylint: enable=import-error
 
 
 class Server(ServerBase):
-
     """Class representing a biomart server.
 
     Typically used as main entry point to the biomart server. Provides
@@ -48,8 +48,7 @@ class Server(ServerBase):
     }
 
     def __init__(self, host=None, path=None, port=None, use_cache=True):
-        super().__init__(host=host, path=path,
-                         port=port, use_cache=use_cache)
+        super().__init__(host=host, path=path, port=port, use_cache=use_cache)
         self._marts = None
 
     def __getitem__(self, name):
@@ -68,29 +67,32 @@ class Server(ServerBase):
         Returns:
             pd.DataFrame: Frame listing available marts.
         """
+
         def _row_gen(attributes):
             for attr in attributes.values():
                 yield (attr.name, attr.display_name)
 
         return pd.DataFrame.from_records(
-            _row_gen(self.marts),
-            columns=['name', 'display_name'])
-
+            _row_gen(self.marts), columns=['name', 'display_name'])
 
     def _fetch_marts(self):
         response = self.get(type='registry')
 
-        xml = xml_from_string(response.text)
-        marts = [self._mart_from_xml(child)
-                 for child in xml.findall('MartURLLocation')]
+        xml = xml_from_string(response.content)
+        marts = [
+            self._mart_from_xml(child)
+            for child in xml.findall('MartURLLocation')
+        ]
 
         return {m.name: m for m in marts}
 
     def _mart_from_xml(self, node):
-        params = {k: node.attrib[v]
-                  for k, v in self._MART_XML_MAP.items()}
-        params['extra_params'] = {k: v for k, v in node.attrib.items()
-                                  if k not in set(self._MART_XML_MAP.values())}
+        params = {k: node.attrib[v] for k, v in self._MART_XML_MAP.items()}
+        params['extra_params'] = {
+            k: v
+            for k, v in node.attrib.items()
+            if k not in set(self._MART_XML_MAP.values())
+        }
         return Mart(use_cache=self.use_cache, **params)
 
     def __repr__(self):
