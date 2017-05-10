@@ -58,16 +58,9 @@ coverage: ## check code coverage quickly with the default Python
 	py.test tests --cov=geneviz --cov-report=html
 	$(BROWSER) htmlcov/index.html
 
-docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/geneviz.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ geneviz
-	$(MAKE) -C docs clean
-	$(MAKE) -C docs html
-	$(BROWSER) docs/_build/html/index.html
-
-servedocs: docs ## compile the docs watching for changes
-	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
+docs: ## generate and serve Sphinx documentation
+	rm -rf docs/_build
+	sphinx-autobuild docs docs/_build
 
 release: clean ## package and upload a release
 	python setup.py sdist upload
@@ -83,7 +76,7 @@ install: clean ## install the package to the active Python's site-packages
 
 gh-pages:
 	git checkout gh-pages
-	rm -rf ./*
+	find ./* -not -path '*/\.*' -prune -exec rm -r "{}" \;
 	git checkout develop docs Makefile src AUTHORS.rst CONTRIBUTING.rst HISTORY.rst README.rst
 	git reset HEAD
 	(cd docs && make html)

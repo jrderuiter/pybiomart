@@ -1,5 +1,5 @@
 API
-============
+===
 
 pybiomart.Dataset
 -----------------
@@ -8,13 +8,13 @@ pybiomart.Dataset
    :members:
 
 pybiomart.Server
------------------
+----------------
 
 .. autoclass:: pybiomart.Server
   :members:
 
 pybiomart.Mart
------------------
+--------------
 
 .. autoclass:: pybiomart.Mart
    :members:

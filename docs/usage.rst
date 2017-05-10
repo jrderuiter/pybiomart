@@ -1,12 +1,8 @@
-Introduction
-============
-
-A simple and pythonic biomart interface for Python.
-
-The intent of pybiomart is to provide a simple interface to biomart, which can be used to easily query biomart databases from Python. In this sense, pybiomart aims to provide functionality similar to packages such as biomaRt (which provides access to biomart from R).
+Usage
+=====
 
 Datasets
-----------------------
+--------
 
 There main interface of pybiomart is provided by the *Dataset* class. A *Dataset* instance can be constructed directly if the name of the dataset and the url of the host are known:
 
@@ -14,7 +10,7 @@ There main interface of pybiomart is provided by the *Dataset* class. A *Dataset
   >>>                   host='http://www.ensembl.org')
 
 Querying
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~
 
 Dataset instances can be used to query the biomart server using their *query* method. This method takes an optional argument *attributes* which specifies the attributes to be retrieved:
 
@@ -23,7 +19,7 @@ Dataset instances can be used to query the biomart server using their *query* me
 The *query* method returns a pandas DataFrame instance, which contains a DataFrame representation of the requested attributes. If no attributes are given, the default attributes of the dataset are used. These default attributes can be identified using the *default_attributes* property of the dataset. A list of all available attributes can be obtained from the *attributes* property. Alternatively, a more convenient overview of all attributes can be obtained in DataFrame format using the *list_attributes* method.
 
 Filtering
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~
 
 Dataset queries can be filtered to avoid fetching unneeded data from the server, thereby reducing the size of the result (and the required bandwidth):
 
@@ -33,7 +29,7 @@ Dataset queries can be filtered to avoid fetching unneeded data from the server,
 The available filters depend on the dataset. All available filters can be accessed using the *filters* property or the *list_filters* method, the latter of which returns an overview of available filters in a DataFrame format. The type of a filter describes what kind of values can be provided for a filter. For example, boolean filters require a boolean value, string filters require a string value, whilst list filters can take a list of values.
 
 Servers and Marts
-----------------------
+-----------------
 
 If the exact dataset not known, the *Server* and *Mart* classes can be used to explore the available marts and datasets on a biomart server. A server instance can be constructed using an optional host url (the url http://www.biomart.org is used by default). This instance can then be used to identify all available marts, either via the *marts* property or the *list_marts* method:
 

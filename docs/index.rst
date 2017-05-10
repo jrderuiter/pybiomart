@@ -1,23 +1,24 @@
-.. pybiomart documentation master file, created by
-   sphinx-quickstart on Sun Mar 20 16:34:07 2016.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+PyBiomart
+=========
 
-Welcome to pybiomart's documentation!
-=====================================
+.. image:: https://travis-ci.org/jrderuiter/pybiomart.svg?branch=develop
+    :target: https://travis-ci.org/jrderuiter/pybiomart
 
-Contents:
+.. image:: https://coveralls.io/repos/github/jrderuiter/pybiomart/badge.svg?branch=develop
+    :target: https://coveralls.io/github/jrderuiter/pybiomart?branch=develop
+
+A simple and pythonic biomart interface for Python.
+
+The intent of pybiomart is to provide a simple interface to biomart, which can be used to easily query biomart databases from Python. In this sense, pybiomart aims to provide functionality similar to packages such as biomaRt (which provides access to biomart from R).
 
 .. toctree::
    :maxdepth: 2
+   :hidden:
 
-   introduction
+   self
+   installation
+   usage
    api
-   development
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   contributing
+   authors
+   history
