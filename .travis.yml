@@ -3,7 +3,6 @@ language: python
 python:
     # We don't actually use the Travis Python, but this keeps it organized.
     - '2.7'
-    - '3.3'
     - '3.4'
     - '3.5'
 
@@ -20,15 +19,13 @@ install:
     # Useful for debugging any issues with conda.
     - conda info -a
 
-    # Create conda environment and install dependencies.
-    - conda create -q -n test python=$TRAVIS_PYTHON_VERSION future pandas requests
+    # Create conda environment.
+    - conda create -q -n test python=$TRAVIS_PYTHON_VERSION
     - source activate test
-    - pip install requests_cache
-    - pip install .
 
-    # Install test dependencies.
-    - conda install pytest mock
-    - pip install pytest-cov python-coveralls
+    # Install with test dependencies.
+    - pip install .[dev]
+
 
 script: py.test --cov pybiomart --cov-report term-missing
 
