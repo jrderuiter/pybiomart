@@ -1,17 +1,14 @@
-import mock
 import pytest
 import requests
 
-# pylint: disable=import-error
-from ._mock import MockResponse
+from pybiomart import base
 
-# pylint: disable=import-self
-from .. import base
+# pylint: disable=redefined-outer-name, no-self-use
 
-# pylint: disable=redefined-outer-name,unused-import
 
 @pytest.fixture
 def default_url():
+    """Default URL fixture."""
     return '{}:{}{}'.format(base.DEFAULT_HOST, base.DEFAULT_PORT,
                             base.DEFAULT_PATH)
 
@@ -24,6 +21,7 @@ class TestBase(object):
         """Tests default instantation."""
 
         base_obj = base.ServerBase()
+
         assert base_obj.host == base.DEFAULT_HOST
         assert base_obj.path == base.DEFAULT_PATH
         assert base_obj.port == base.DEFAULT_PORT
@@ -34,13 +32,16 @@ class TestBase(object):
         """Tests instantation with custom args."""
 
         base_obj = base.ServerBase(
-            host='http://www.ensembl.org', path='/other/path',
-            port=8080, use_cache=False)
+            host='http://www.ensembl.org',
+            path='/other/path',
+            port=8080,
+            use_cache=False)
+
         assert base_obj.host == 'http://www.ensembl.org'
         assert base_obj.path == '/other/path'
         assert base_obj.port == 8080
         assert not base_obj.use_cache
-        assert base_obj.url  == 'http://www.ensembl.org:8080/other/path'
+        assert base_obj.url == 'http://www.ensembl.org:8080/other/path'
 
     def test_missing_http(self):
         """Tests url with missing http."""
@@ -54,24 +55,26 @@ class TestBase(object):
         base_obj = base.ServerBase(host='http://www.ensembl.org/')
         assert base_obj.host == 'http://www.ensembl.org'
 
-    def test_get(self, default_url):
+    def test_get(self, mocker, default_url):
         """Tests get invocation."""
 
-        req = MockResponse()
+        req = pytest.helpers.mock_response()
 
-        with mock.patch.object(requests, 'get', return_value=req) as mock_get:
-            base_obj = base.ServerBase()
-            base_obj.get()
+        mock_get = mocker.patch.object(requests, 'get', return_value=req)
 
-            mock_get.assert_called_once_with(default_url, params={})
+        base_obj = base.ServerBase()
+        base_obj.get()
 
-    def test_get_with_params(self, default_url):
+        mock_get.assert_called_once_with(default_url, params={})
+
+    def test_get_with_params(self, mocker, default_url):
         """Tests get invocation with custom parameters."""
 
-        req = MockResponse()
+        req = pytest.helpers.mock_response()
 
-        with mock.patch.object(requests, 'get', return_value=req) as mock_get:
-            base_obj = base.ServerBase()
-            base_obj.get(test=True)
+        mock_get = mocker.patch.object(requests, 'get', return_value=req)
 
-            mock_get.assert_called_once_with(default_url, params={'test': True})
+        base_obj = base.ServerBase()
+        base_obj.get(test=True)
+
+        mock_get.assert_called_once_with(default_url, params={'test': True})

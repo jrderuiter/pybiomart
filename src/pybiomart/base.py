@@ -12,11 +12,10 @@ DEFAULT_PATH = '/biomart/martservice'
 DEFAULT_PORT = 80
 DEFAULT_SCHEMA = 'default'
 
-requests_cache.install_cache('_pybiomart_cache')
+requests_cache.install_cache('.pybiomart')
 
 
 class ServerBase(object):
-
     """Base class that handles requests to the biomart server.
 
     Attributes:
@@ -28,8 +27,7 @@ class ServerBase(object):
 
     """
 
-    def __init__(self, host=None, path=None,
-                 port=None, use_cache=True):
+    def __init__(self, host=None, path=None, port=None, use_cache=True):
         """ServerBase constructor.
 
         Args:
