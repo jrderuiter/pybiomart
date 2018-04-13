@@ -14,7 +14,6 @@ import pandas as pd
 from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
 
 # pylint: enable=import-error
-VALID_DATA_TYPES = (str, int, float, object)
 
 class Dataset(ServerBase):
     """Class representing a biomart dataset.
@@ -178,21 +177,7 @@ class Dataset(ServerBase):
                     display_name=attrib.get('displayName', ''),
                     description=attrib.get('description', ''),
                     default=default)
-    
-    def _check_data_types(self, dtypes):
-        """Check if the datatypes are valid
-        
-        Args:
-            dtypes(dict[str,any]): Describes datatypes for a DataFrame
-        
-        Returns:
-            bool: If all types are correct or not
-        """
-        for dtype in dtypes.values():
-            if dtype not in VALID_DATA_TYPES:
-                return False
-        return True
-    
+
     def query(self,
               attributes=None,
               filters=None,
@@ -282,13 +267,13 @@ class Dataset(ServerBase):
         # Raise exception if an error occurred.
         if 'Query ERROR' in response.text:
             raise BiomartException(response.text)
-        
-        if dtypes:
-            if not self._check_data_types(dtypes):
-                raise ValueError("Non valid data type is used in dtypes")
 
         # Parse results into a DataFrame.
-        result = pd.read_csv(StringIO(response.text), sep='\t', dtype=dtypes)
+        try:
+            result = pd.read_csv(StringIO(response.text), sep='\t', dtype=dtypes)
+        # Type error is raised of a data type is not understood by pandas
+        except TypeError as err:
+            raise ValueError("Non valid data type is used in dtypes")
 
         if use_attr_names:
             # Rename columns with attribute names instead of display names.

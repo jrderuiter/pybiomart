@@ -119,9 +119,10 @@ class TestDatasetStatic(object):
             mock_dataset, 'get', return_value=dataset_query_response)
 
         data_types = {'Ensembl Gene ID': str}
+        query_params['dtypes'] = data_types
 
         # Perform query.
-        res = mock_dataset.query(**query_params, dtypes=data_types)
+        res = mock_dataset.query(**query_params)
 
         # Check query result.
         assert len(res) > 0
@@ -137,10 +138,11 @@ class TestDatasetStatic(object):
             mock_dataset, 'get', return_value=dataset_query_response)
 
         data_types = {'Ensembl Gene ID': 'hello'}
+        query_params['dtypes'] = data_types
 
         # Perform query.
         with pytest.raises(ValueError):
-            res = mock_dataset.query(**query_params, dtypes=data_types)
+            res = mock_dataset.query(**query_params)
 
 
 
