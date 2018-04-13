@@ -14,7 +14,7 @@ import pandas as pd
 from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
 
 # pylint: enable=import-error
-
+VALID_DATA_TYPES = (str, int, float, object)
 
 class Dataset(ServerBase):
     """Class representing a biomart dataset.
@@ -178,12 +178,28 @@ class Dataset(ServerBase):
                     display_name=attrib.get('displayName', ''),
                     description=attrib.get('description', ''),
                     default=default)
-
+    
+    def _check_data_types(self, dtypes):
+        """Check if the datatypes are valid
+        
+        Args:
+            dtypes(dict[str,any]): Describes datatypes for a DataFrame
+        
+        Returns:
+            bool: If all types are correct or not
+        """
+        for dtype in dtypes.values():
+            if dtype not in VALID_DATA_TYPES:
+                return False
+        return True
+    
     def query(self,
               attributes=None,
               filters=None,
               only_unique=True,
-              use_attr_names=False):
+              use_attr_names=False,
+              dtypes = None
+              ):
         """Queries the dataset to retrieve the contained data.
 
         Args:
@@ -199,6 +215,8 @@ class Dataset(ServerBase):
             use_attr_names (bool): Whether to use the attribute names
                 as column names in the result (True) or the attribute
                 display names (False).
+            dtypes (dict[str,any]): Dictionary of attributes --> data types
+                to describe to pandas how the columns should be handled
 
         Returns:
             pandas.DataFrame: DataFrame containing the query results.
@@ -264,9 +282,13 @@ class Dataset(ServerBase):
         # Raise exception if an error occurred.
         if 'Query ERROR' in response.text:
             raise BiomartException(response.text)
+        
+        if dtypes:
+            if not self._check_data_types(dtypes):
+                raise ValueError("Non valid data type is used in dtypes")
 
         # Parse results into a DataFrame.
-        result = pd.read_csv(StringIO(response.text), sep='\t')
+        result = pd.read_csv(StringIO(response.text), sep='\t', dtype=dtypes)
 
         if use_attr_names:
             # Rename columns with attribute names instead of display names.
