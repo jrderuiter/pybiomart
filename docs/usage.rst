@@ -18,6 +18,16 @@ Dataset instances can be used to query the biomart server using their *query* me
 
 The *query* method returns a pandas DataFrame instance, which contains a DataFrame representation of the requested attributes. If no attributes are given, the default attributes of the dataset are used. These default attributes can be identified using the *default_attributes* property of the dataset. A list of all available attributes can be obtained from the *attributes* property. Alternatively, a more convenient overview of all attributes can be obtained in DataFrame format using the *list_attributes* method.
 
+Data Types
+~~~~~~~~~~~
+
+When creating a pandas dataframe from the result of a query, pandas needs to read through all lines to know the proper data type of a column. To improve performance users can specify data types on the columns by providing a dictionary with column names as keys and the data type as values to dataset.query:
+
+  >>> dataset.query(attributes=['ensembl_gene_id'], dtypes={"Ensembl Gene ID": str})
+
+Please see https://stackoverflow.com/questions/24251219/pandas-read-csv-low-memory-and-dtype-options#27232309 for more info.
+
+
 Filtering
 ~~~~~~~~~
 

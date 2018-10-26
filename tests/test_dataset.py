@@ -109,6 +109,42 @@ class TestDatasetStatic(object):
         assert len(res) > 0
         assert 'ensembl_gene_id' in res
 
+    def test_query_data_types(self, mocker, mock_dataset_with_config,
+                             query_params, dataset_query_response):
+        """Tests example query with data types specified."""
+
+        mock_dataset = mock_dataset_with_config
+
+        mock_get = mocker.patch.object(
+            mock_dataset, 'get', return_value=dataset_query_response)
+
+        data_types = {'Ensembl Gene ID': str}
+        query_params['dtypes'] = data_types
+
+        # Perform query.
+        res = mock_dataset.query(**query_params)
+
+        # Check query result.
+        assert len(res) > 0
+        assert 'Ensembl Gene ID' in res
+
+    def test_query_non_valid_data_types(self, mocker, mock_dataset_with_config,
+                                         query_params, dataset_query_response):
+        """Tests example query with non valid data types specified."""
+
+        mock_dataset = mock_dataset_with_config
+
+        mock_get = mocker.patch.object(
+            mock_dataset, 'get', return_value=dataset_query_response)
+
+        data_types = {'Ensembl Gene ID': 'hello'}
+        query_params['dtypes'] = data_types
+
+        # Perform query.
+        with pytest.raises(ValueError):
+            res = mock_dataset.query(**query_params)
+
+
 
 class TestDatasetLive(object):
     """Live unit tests for dataset."""

@@ -15,7 +15,6 @@ from .base import ServerBase, BiomartException, DEFAULT_SCHEMA
 
 # pylint: enable=import-error
 
-
 class Dataset(ServerBase):
     """Class representing a biomart dataset.
 
@@ -183,7 +182,9 @@ class Dataset(ServerBase):
               attributes=None,
               filters=None,
               only_unique=True,
-              use_attr_names=False):
+              use_attr_names=False,
+              dtypes = None
+              ):
         """Queries the dataset to retrieve the contained data.
 
         Args:
@@ -199,6 +200,8 @@ class Dataset(ServerBase):
             use_attr_names (bool): Whether to use the attribute names
                 as column names in the result (True) or the attribute
                 display names (False).
+            dtypes (dict[str,any]): Dictionary of attributes --> data types
+                to describe to pandas how the columns should be handled
 
         Returns:
             pandas.DataFrame: DataFrame containing the query results.
@@ -266,7 +269,11 @@ class Dataset(ServerBase):
             raise BiomartException(response.text)
 
         # Parse results into a DataFrame.
-        result = pd.read_csv(StringIO(response.text), sep='\t')
+        try:
+            result = pd.read_csv(StringIO(response.text), sep='\t', dtype=dtypes)
+        # Type error is raised of a data type is not understood by pandas
+        except TypeError as err:
+            raise ValueError("Non valid data type is used in dtypes")
 
         if use_attr_names:
             # Rename columns with attribute names instead of display names.
